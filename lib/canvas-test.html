@@ -6,22 +6,30 @@
 
 <script>
 
-var timeToPosition = function(time) {
-	return (time.hours % 12)/12 + time.minutes/12/60 + time.seconds/12/60/60;
+var offsetToAngle = function(offset) {
+	return 2 * Math.PI * offset;
 };
-var positionToTime = function(position) {
-	var time = {};
-    
-    var hours = position * 12;
-    time.hours = Math.floor(hours);
-    
-    var minutes = (hours - time.hours) * 60;
-    time.minutes = Math.floor(minutes);
-    
-    var seconds = (minutes - time.minutes) * 60;
-    time.seconds = Math.round(seconds);
-    
-    return time;
+
+var timeToOffset = function(hours, minutes, seconds) {
+	return (hours % 12)/12 + minutes/12/60 + seconds/12/60/60;
+};
+
+var timeToPosition = function(hours, minutes, seconds) {
+	var hoursOffset = timeToOffset(hours, minutes, seconds);
+  var minutesOffset = timeToOffset(0, minutes, seconds) * 12;
+
+  if (minutesOffset < hoursOffset) {
+  	minutesOffset += 1;
+  }
+  
+  var length = minutesOffset - hoursOffset;  
+  var center = hoursOffset + length / 2;
+  
+  if (center > 1) {
+  	center -= 1;
+  }
+  
+  return { center, length };
 };
 
 var canvas = document.getElementById("myCanvas");
@@ -29,66 +37,71 @@ var ctx = canvas.getContext("2d");
 
 var currentPosition = null;
 
-var drawTime = function(time) {
-	currentPosition = timeToPosition(time);
+var draw = function(position) {
+	currentPosition = position;
     
 	ctx.save();
-    ctx.clearRect(0, 0, 400, 400);
+  ctx.clearRect(0, 0, 400, 400);
 	ctx.translate(200, 200);
-	ctx.rotate(-Math.PI/2);
+	ctx.rotate(-Math.PI/2 + offsetToAngle(position.center));
     
-    var hoursAngle = 2*Math.PI * currentPosition;
-    var minutesAngle = 2*Math.PI * 12 * timeToPosition({hours:0, minutes: time.minutes, seconds: time.seconds});
+    var startAngle = -1 * offsetToAngle(position.length/2);
+    var endAngle = offsetToAngle(position.length/2);
     
 	ctx.beginPath();
 	ctx.lineWidth = 50;
-	ctx.arc(0, 0, 100, hoursAngle, minutesAngle);
+	ctx.arc(0, 0, 100, startAngle, endAngle);
 	ctx.stroke();
 
 	ctx.restore();
 };
 
-var drawCurrentTime = function() {
+var getNowPosition = function() {
 	var now = new Date();
-    drawTime({hours:now.getHours(), minutes:now.getMinutes(), seconds:now.getSeconds()});
+	return timeToPosition(now.getHours(), now.getMinutes(), now.getSeconds());
 };
 
-var drawLogo = function() {
-	drawTime({hours:5, minutes:4, seconds:40});
-	//drawTime(4, 09, 15);
-};
-
-var animateCurrentTime = function() {
-	drawCurrentTime();
-    window.requestAnimationFrame(animateCurrentTime);
+var getLogoPosition = function() {
+	return { center: 0.75, length: 0.7 };
 };
 
 var transition = {};
-var transitionTo = function(newEndTime) {
-	console.log('calling transition to', newEndTime);
-    // Time to make an entire revolution
-    var revolutionDuration = 10000;
-    
+var transitionTo = function(newEndPosition) {
+	var maxDuration = 1000;
+
 	var now = Date.now();
     
-	if (newEndTime) {
+	if (newEndPosition) {
     	// New transition
-        transition.startPosition = currentPosition;
-        transition.endPosition = timeToPosition(newEndTime);
-        transition.startAt = now;
-        transition.duration = Math.abs(transition.startPosition - transition.endPosition) * revolutionDuration;
-    }
+      transition.from = currentPosition;
+      transition.to = newEndPosition;
+      
+      var centerDiff = transition.to.center - transition.from.center;
+      if (centerDiff < -0.5) {
+      	centerDiff += 1;
+      }
+      else if (centerDiff > 0.5) {
+      	centerDiff -= 1;
+      }
+      
+      transition.diff = {
+      	center: centerDiff,
+      	length: transition.to.length - transition.from.length,
+      };
+      
+      transition.at = now;
+      transition.for = Math.max(Math.abs(transition.diff.length), Math.abs(transition.diff.center) * 2) * maxDuration;
+  }
     
     // How far are we in the transition?
-    var progress = Math.max(0, Math.min((now - transition.startAt) / transition.duration, 1));
+    var progress = Math.max(0, Math.min((now - transition.at) / transition.for, 1));
     
-    var forward = transition.endPosition > transition.startPosition;
-    var nextPosition = transition.startPosition + (forward ? 1 : -1) * progress * Math.abs(transition.startPosition - transition.endPosition);
-    var nextTime = positionToTime(nextPosition);
+    var newPosition = {
+    	center: transition.from.center + transition.diff.center * progress,
+    	length: transition.from.length + transition.diff.length * progress,
+    };
     
-    console.log(nextTime);
-    
-    drawTime(nextTime);
+    draw(newPosition);
     if (progress < 1) {
     	window.requestAnimationFrame(transitionTo.bind(null, null));
     }
@@ -96,18 +109,13 @@ var transitionTo = function(newEndTime) {
 
 
 
-//animateCurrentTime();
-
-drawCurrentTime();
+draw(getNowPosition());
 
 setTimeout(function() {
-	//transitionTo({hours:5, minutes:4, seconds:40});
+	transitionTo(getLogoPosition());
 }, 2000);
 
 
-
-
-//window.requestAnimationFrame(drawCurrentTime);
 
 </script>
 
