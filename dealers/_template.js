@@ -9,6 +9,7 @@ module.exports = {
     images: [
       '',
     ],
+    brand: '',
     title: '',
     description: '',
     price: '',
@@ -16,5 +17,9 @@ module.exports = {
       selector: '',
       is: ''
     }
-  }
+  },
+
+  postParsing(item) {
+    return item;
+  },
 };
