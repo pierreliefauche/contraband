@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <body>
+  <script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
 
-<canvas id="myCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+<canvas id="myCanvas" width="400" height="400" style="border:0px solid #000000;"></canvas>
 
 <script>
 
@@ -21,14 +22,14 @@ var timeToPosition = function(hours, minutes, seconds) {
   if (minutesOffset < hoursOffset) {
   	minutesOffset += 1;
   }
-  
-  var length = minutesOffset - hoursOffset;  
+
+  var length = minutesOffset - hoursOffset;
   var center = hoursOffset + length / 2;
-  
+
   if (center > 1) {
   	center -= 1;
   }
-  
+
   return { center, length };
 };
 
@@ -39,15 +40,15 @@ var currentPosition = null;
 
 var draw = function(position) {
 	currentPosition = position;
-    
+
 	ctx.save();
   ctx.clearRect(0, 0, 400, 400);
 	ctx.translate(200, 200);
 	ctx.rotate(-Math.PI/2 + offsetToAngle(position.center));
-    
+
     var startAngle = -1 * offsetToAngle(position.length/2);
     var endAngle = offsetToAngle(position.length/2);
-    
+
 	ctx.beginPath();
 	ctx.lineWidth = 50;
 	ctx.arc(0, 0, 100, startAngle, endAngle);
@@ -67,15 +68,15 @@ var getLogoPosition = function() {
 
 var transition = {};
 var transitionTo = function(newEndPosition) {
-	var maxDuration = 1000;
+	var maxDuration = 300;
 
 	var now = Date.now();
-    
+
 	if (newEndPosition) {
     	// New transition
       transition.from = currentPosition;
       transition.to = newEndPosition;
-      
+
       var centerDiff = transition.to.center - transition.from.center;
       if (centerDiff < -0.5) {
       	centerDiff += 1;
@@ -83,24 +84,24 @@ var transitionTo = function(newEndPosition) {
       else if (centerDiff > 0.5) {
       	centerDiff -= 1;
       }
-      
+
       transition.diff = {
       	center: centerDiff,
       	length: transition.to.length - transition.from.length,
       };
-      
+
       transition.at = now;
       transition.for = Math.max(Math.abs(transition.diff.length), Math.abs(transition.diff.center) * 2) * maxDuration;
   }
-    
+
     // How far are we in the transition?
     var progress = Math.max(0, Math.min((now - transition.at) / transition.for, 1));
-    
+
     var newPosition = {
     	center: transition.from.center + transition.diff.center * progress,
     	length: transition.from.length + transition.diff.length * progress,
     };
-    
+
     draw(newPosition);
     if (progress < 1) {
     	window.requestAnimationFrame(transitionTo.bind(null, null));
@@ -111,11 +112,11 @@ var transitionTo = function(newEndPosition) {
 
 draw(getNowPosition());
 
-setTimeout(function() {
-	transitionTo(getLogoPosition());
-}, 2000);
+// setTimeout(function() {
+// 	transitionTo(getLogoPosition());
+// }, 2000);
 
-
+$('canvas').hover(() => transitionTo(getLogoPosition()), () => transitionTo(getNowPosition()))
 
 </script>
 
