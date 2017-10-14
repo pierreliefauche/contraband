@@ -8,14 +8,23 @@
     "web-copy": "copyfiles -f ./web/index.html ./web-dist",
     "web-build": "rm -r ./web-dist & npm run web-copy & webpack --env=dist",
     "web-dev": "WEBPACK_ENV=dev node_modules/.bin/webpack-dev-server --host 0.0.0.0",
-    "api-dev": "./node_modules/.bin/nodemon src",
+    "api-dev": "./dev/run.sh",
     "api-serve": "node api",
     "start": "npm run api-serve"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "cheerio": "^1.0.0-rc.2",
+    "compression": "^1.7.1",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "helmet": "^3.9.0",
+    "hpp": "^0.2.2",
     "lodash": "^4.17.4",
-    "request": "^2.83.0"
+    "morgan": "^1.9.0",
+    "request": "^2.83.0",
+    "serve-static": "^1.13.1",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "ampersand-app": "^2.0.0",
