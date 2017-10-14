@@ -1,6 +1,5 @@
 import app from 'ampersand-app';
 import Router from 'ampersand-router';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import HomePage from 'views/home-page';
 

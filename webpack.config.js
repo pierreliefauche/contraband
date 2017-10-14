@@ -33,11 +33,12 @@ const baseConfig = {
     noInfo: false,
   },
   plugins: [
-    // new webpack.ProvidePlugin({
-    //   _: 'lodash',
+    new webpack.ProvidePlugin({
+      _: 'lodash',
+      React: 'react',
     //   $: 'jquery',
     //   jQuery: 'jquery',
-    // }),
+    }),
   ],
   resolve: {
     extensions: [
