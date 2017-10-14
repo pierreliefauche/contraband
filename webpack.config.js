@@ -46,7 +46,7 @@ const baseConfig = {
     ],
     alias: {
       models: srcPath + '/models/',
-      // views: srcPath + '/views/',
+      views: srcPath + '/views/',
       styles: srcPath + '/styles/',
       // config: srcPath + '/config/' + process.env.WEBPACK_ENV,
       // jQuery: 'jquery',

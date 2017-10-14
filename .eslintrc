@@ -1,4 +1,5 @@
 {
+  "parse": "babel-eslint",
   "plugins": [],
   "ecmaFeatures": {
     "jsx": true,
