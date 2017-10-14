@@ -1,22 +1,50 @@
 {
   "private": true,
-  "name": "dealers.watch",
+  "name": "Contraband",
   "version": "0.1.0",
   "main": "src",
-  "description": "Dealers.watch",
+  "description": "Far from fake",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon lib",
-    "start": "node src"
+    "web-copy": "copyfiles -f ./web/index.html ./web-dist",
+    "web-build": "rm -r ./web-dist & npm run web-copy & webpack --env=dist",
+    "web-dev": "WEBPACK_ENV=dev node_modules/.bin/webpack-dev-server --host 0.0.0.0",
+    "api-dev": "./node_modules/.bin/nodemon src",
+    "api-serve": "node api",
+    "start": "npm run api-serve"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "lodash": "^4.17.4",
     "request": "^2.83.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "ampersand-app": "^2.0.0",
+    "ampersand-model": "^8.0.0",
+    "ampersand-react-mixin": "^2.0.0",
+    "ampersand-rest-collection": "^6.0.0",
+    "ampersand-router": "^5.0.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "copyfiles": "^1.2.0",
+    "css-loader": "^0.28.7",
+    "ejs-loader": "^0.3.0",
+    "file-loader": "^1.1.5",
+    "json-loader": "^0.5.7",
+    "minimist": "^1.2.0",
+    "node-sass": "^4.5.3",
+    "nodemon": "^1.12.1",
+    "postcss-loader": "^2.0.7",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.7.1",
+    "webpack-dev-server": "^2.9.1"
   },
   "engines": {
-    "node": "8.5.0"
+    "node": "8.7.0"
   },
   "author": {
     "name": "Pierre-Élie Fauché",
