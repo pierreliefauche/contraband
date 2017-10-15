@@ -70,7 +70,11 @@ class WatchesStore {
   upsert(watches, cb) {
     watches = [].concat(watches);
 
+    let at = Date.now();
+
     async.each(watches, (watch, cb) => {
+      at -= 100;
+      const now = new Date(at);
       this.writeCargo.push({
         updateOne: {
           filter: {
@@ -78,12 +82,12 @@ class WatchesStore {
           },
           update: {
             $setOnInsert: {
-              createdAt: new Date()
+              createdAt: now,
             },
             $set: {
               ...watch,
               _id: watch.id,
-              updatedAt: new Date(),
+              updatedAt: now,
             },
           },
           upsert: true,
