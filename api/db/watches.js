@@ -92,7 +92,7 @@ class WatchesStore {
     const query = {};
 
     if (options.page) {
-      query._id : {
+      query._id = {
         $lte: ObjectID.createFromHexString(options.page),
       };
     }
@@ -104,7 +104,7 @@ class WatchesStore {
 
     // Sorting
     // By createdAt DESC (use _id because we batch insert)
-    cursor.sort([['_id': -1]]);
+    cursor.sort([['_id', -1]]);
 
 
     cursor.toArray((err, watches) => {
