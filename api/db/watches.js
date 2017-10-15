@@ -1,6 +1,7 @@
 'use strict';
 
 const log = global.log;
+const ObjectID = require('mongodb').ObjectID;
 const async = require('async');
 
 class WatchesStore {
@@ -48,25 +49,6 @@ class WatchesStore {
     });
   }
 
-  listByDealerId(dealerId, cb) {
-    const query = {
-      dealerid: dealerId.toString(),
-    };
-
-    const queryOpts = {
-      sort: { createdAt: 1 },
-    };
-
-    this.collection.find(query, queryOpts).toArray((err, watches) => {
-      if (err) {
-        log.error(err);
-        return cb(err);
-      }
-
-      return cb(null, watches);
-    });
-  }
-
   deleteNulls(object) {
     Object.keys(object).forEach(k => {
       if (object[k] == null) {
@@ -80,15 +62,13 @@ class WatchesStore {
   upsert(watches, cb) {
     watches = [].concat(watches);
 
-    let at = Date.now();
+    const now = Date.now();
 
     async.each(watches, (watch, cb) => {
-      at -= 100;
-      const now = new Date(at);
       this.writeCargo.push({
         updateOne: {
           filter: {
-            _id: watch.id
+            id: watch.id
           },
           update: {
             $setOnInsert: {
@@ -104,6 +84,44 @@ class WatchesStore {
         }
       }, cb);
     }, cb);
+  }
+
+  list(criteria = {}, options = {}, cb) {
+    const limit = Math.max(10, Math.min(options.limit || 50, 100));
+
+    const query = {};
+
+    if (options.page) {
+      query._id : {
+        $lte: ObjectID.createFromHexString(options.page),
+      };
+    }
+
+    let cursor = this.collection.find(query);
+
+    // Limit (add 1 for paging)
+    cursor.limit(limit + 1);
+
+    // Sorting
+    // By createdAt DESC (use _id because we batch insert)
+    cursor.sort([['_id': -1]]);
+
+
+    cursor.toArray((err, watches) => {
+      if (err) {
+        log.error(err);
+        return cb(err);
+      }
+
+      const meta = {};
+
+      if (watches.length > limit) {
+        meta.nextPage = watches[limit]._id.toHexString();
+        watches = watches.slice(0, limit);
+      }
+
+      return cb(null, watches, meta);
+    });
   }
 }
 

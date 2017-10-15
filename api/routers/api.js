@@ -15,6 +15,7 @@ module.exports = (() => {
 
     router.get('/brands', self.listBrands);
     router.get('/dealers', self.listDealers);
+    router.get('/watches', self.listWatches);
 
     router.get('/scrap/:dealerId', self.scrapDealer);
     router.get('/scrap-and-save/all', self.scrapAndSaveDealers);
@@ -22,6 +23,17 @@ module.exports = (() => {
     router.use(self.failTo404);
     return router;
   };
+
+  self.getLimit = (req, defaultLimit) => {
+    if (typeof req.query.limit === 'string') {
+      const int = parseInt(req.query.limit, 10);
+      if (!isNaN(int)) {
+        return int;
+      }
+    }
+
+    return defaultLimit;
+  }
 
   self.listBrands = (req, res) => {
     return res.json(brands.all().map(brand => ({
@@ -36,6 +48,24 @@ module.exports = (() => {
       name: dealer.name,
       url: dealer.urls[0],
     })));
+  };
+
+  self.listWatches = (req, res, next) => {
+    const criteria = {};
+    const options = { page: req.query.page, limit: self.getLimit(req) };
+
+    self.db.watches.list(criteria, options, (err, watches, meta) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      if (meta.nextPage) {
+        res.set('X-Next-Page', meta.nextPage);
+      }
+
+      return res.json(watches);
+    });
   };
 
   self.scrapDealer = (req, res, next) => {
