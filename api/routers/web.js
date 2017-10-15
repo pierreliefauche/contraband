@@ -6,7 +6,7 @@ const serveStatic = require('serve-static');
 
 module.exports = (() => {
   const self = (config = {}) => { // eslint-disable-line no-unused-vars
-    self.serveStatic = serveStatic(config.root);
+    self.serveStatic = serveStatic(config.root, {etag: false, maxAge: 0});
 
     const router = new express.Router();
     router.use(self.serveStatic);
