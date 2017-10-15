@@ -1,11 +1,13 @@
 import app from 'ampersand-app';
 import Router from './router';
+import AppState from 'models/app'
 
 export default app.extend({
   router: new Router(),
+  state: new AppState(),
 
   init() {
-    console.log('INIT');
+    this.state.fetchInitialData();
     this.router.history.start({ pushState: true });
   },
 

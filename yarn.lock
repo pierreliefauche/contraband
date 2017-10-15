@@ -146,7 +146,7 @@ ampersand-router@^5.0.0:
     ampersand-version "^1.0.0"
     lodash "^4.11.1"
 
-ampersand-state@^5.0.1:
+ampersand-state@^5.0.1, ampersand-state@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/ampersand-state/-/ampersand-state-5.0.2.tgz#16830def866c644ecd21da8c8ba8717aa2b8d23c"
   dependencies:
@@ -4619,6 +4619,10 @@ randombytes@^2.0.0, randombytes@^2.0.1:
 range-parser@^1.0.3, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
+
+raven-js@^3.18.1:
+  version "3.18.1"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.18.1.tgz#746339c08fca75c3f402d7e6b633687c3ffc6ee8"
 
 raven@^2.2.1:
   version "2.2.1"
