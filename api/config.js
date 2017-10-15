@@ -10,6 +10,7 @@ const config = {
   port: process.env.PORT,
   host: process.env.HOST,
   redisUrl: process.env.REDIS_URL || process.env.REDISTOGO_URL,
+  mongoUrl: process.env.MONGODB_URL,
   sentryDsn: process.env.SENTRY_DSN,
 };
 

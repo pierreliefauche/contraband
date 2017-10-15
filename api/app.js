@@ -10,6 +10,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const Raven = require('raven');
 
 const config = require('./config');
 const middlewares = require('./middlewares');
@@ -24,6 +25,11 @@ app.set('query parser', 'simple');
 app.set('strict routing', false);
 app.set('trust proxy', true);
 app.set('x-powered-by', false);
+
+// Configure Sentry
+// (must be first middleware)
+Raven.config(config.sentryDsn).install();
+app.use(Raven.requestHandler());
 
 app.use(cors({
   credentials: true,
@@ -48,6 +54,7 @@ app.use('/api', routers.api({}));
 app.use(routers.web({ root: path.join(__dirname, '/../web-dist') }));
 
 // Error handling
+app.use(Raven.errorHandler());
 app.use(middlewares.sendError());
 
 module.exports = app;
