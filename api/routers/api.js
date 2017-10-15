@@ -3,6 +3,7 @@
 const log = global.log;
 const express = require('express');
 const async = require('async');
+const brands = require('../../lib').brands;
 const dealers = require('../../lib').dealers;
 const Scraper = require('../../lib').Scraper;
 
@@ -12,11 +13,29 @@ module.exports = (() => {
 
     const router = new express.Router();
 
+    router.get('/brands', self.listBrands);
+    router.get('/dealers', self.listDealers);
+
     router.get('/scrap/:dealerId', self.scrapDealer);
     router.get('/scrap-and-save/all', self.scrapAndSaveDealers);
 
     router.use(self.failTo404);
     return router;
+  };
+
+  self.listBrands = (req, res) => {
+    return res.json(brands.all().map(brand => ({
+      id: brand.id,
+      name: brand.name,
+    })));
+  };
+
+  self.listDealers = (req, res) => {
+    return res.json(dealers.all().map(dealer => ({
+      id: dealer.id,
+      name: dealer.name,
+      url: dealer.urls[0],
+    })));
   };
 
   self.scrapDealer = (req, res, next) => {
