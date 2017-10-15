@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "ampersand-app": "^2.0.0",
+    "ampersand-events": "^2.0.2",
     "ampersand-model": "^8.0.0",
-    "ampersand-react-mixin": "^2.0.0",
     "ampersand-rest-collection": "^6.0.0",
     "ampersand-router": "^5.0.0",
     "ampersand-state": "^5.0.2",

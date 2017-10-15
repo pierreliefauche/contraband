@@ -2,6 +2,7 @@ import app from 'ampersand-app';
 import Router from 'ampersand-router';
 import ReactDOM from 'react-dom';
 import HomePage from 'views/home-page';
+import WatchList from 'views/watch/list';
 
 export default Router.extend({
   routes: {
@@ -25,7 +26,7 @@ export default Router.extend({
   },
 
   listWatches() {
-    this.renderPage(<HomePage/>, {layout: false})
+    this.renderPage(<WatchList watches={app.state.watches} />, {layout: false})
   },
 
   catchAll() {

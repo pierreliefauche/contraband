@@ -30,6 +30,10 @@ export default Collection.extend(xhrMixin, {
     return Collection.prototype.fetch.call(this, options);
   },
 
+  hasNextPage() {
+    return Boolean(this.nextPage);
+  },
+
   fetchNextPage() {
     if (this.nextPage) {
       this.fetch({

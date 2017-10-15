@@ -121,13 +121,6 @@ ampersand-model@^8.0.0:
     ampersand-version "^1.0.2"
     lodash "^4.11.1"
 
-ampersand-react-mixin@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ampersand-react-mixin/-/ampersand-react-mixin-2.0.0.tgz#70e9037a2d40afcaafb7e90c6f4c20a66c844c8d"
-  dependencies:
-    ampersand-events "^2.0.2"
-    lodash "^4.17.4"
-
 ampersand-rest-collection@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/ampersand-rest-collection/-/ampersand-rest-collection-6.0.0.tgz#a051267979b2cf7606a38383d9ee96d121a628f3"

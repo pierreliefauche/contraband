@@ -1,4 +1,5 @@
 import Model from 'models/_model';
+import app from 'ampersand-app';
 
 export default Model.extend({
   props: {
@@ -13,5 +14,20 @@ export default Model.extend({
     brandId: ['string', false],
     createdAt: ['date', true],
     updatedAt: ['date', true],
+  },
+
+  derived: {
+    dealer: {
+      deps: ['dealerId'],
+      fn() {
+        return app.state.dealers.getOptimist(this.dealerId);
+      },
+    },
+    brand: {
+      deps: ['brandId'],
+      fn() {
+        return app.state.brands.getOptimist(this.brandId);
+      },
+    },
   },
 });
