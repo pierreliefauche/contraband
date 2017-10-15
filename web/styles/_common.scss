@@ -1,0 +1,94 @@
+@mixin flex-fill($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: stretch;
+  align-content: stretch;
+
+  > * {
+    flex: 1 1;
+  }
+}
+
+
+@mixin ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
+@mixin absolute-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+@mixin n-to-m-elements($n, $m, $selector) {
+  @for $i from $n through $m {
+    #{$selector}:first-child:nth-last-child(#{$i}),
+    #{$selector}:first-child:nth-last-child(#{$i}) ~ #{$selector} {
+      @content
+    }
+  }
+}
+
+@mixin up-to-n-elements($n, $selector) {
+  @include n-to-m-elements(0, $n, $selector) {
+    @content
+  }
+}
+
+@mixin n-elements($n, $selector) {
+  @include n-to-m-elements($n, $n, $selector) {
+    @content
+  }
+}
+
+
+
+
+* {
+  position: relative;
+  box-sizing: border-box;
+  font-family: Avenir, system, system, -apple-system, "BlinkMacSystemFont",
+      ".SFNSDisplay-Regular", "Helvetica Neue", Helvetica, "Lucida Grande", Arial, sans-serif;
+}
+
+input,
+textarea,
+select {
+  outline: none;
+  background: none;
+  border: none;
+}
+
+.flex-fill-row {
+  @include flex-fill(row);
+}
+.flex-fill-column {
+  @include flex-fill(column);
+  overflow-y: auto;
+}
+.flex-fill-gap {
+  flex: 999 999 auto;
+}
+.flex-fill-wrap {
+  flex: 0 0 100%;
+}
+
+.absolute-cover {
+  @include absolute-cover;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

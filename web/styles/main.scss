@@ -1,3 +1,5 @@
+@import './_common.scss';
+
 html {
   touch-action: manipulation;
 }
@@ -6,10 +8,80 @@ body {
   font-family: Avenir, system, sans-serif;
 }
 
+a, u {
+  text-decoration: none;
+}
+
 h1 {
   padding: 0;
   margin: 0;
   font-size: 15em;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+
+
+#app {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  min-width: 200px;
+
+  @include flex-fill(column);
+}
+
+
+.watches {
+  .list {
+    padding-top: 50px;
+    flex-wrap: wrap;
+    overflow: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    align-content: flex-start;
+  }
+}
+
+.watch {
+  position: relative;
+  flex: 0 0 250px;
+  height: 300px;
+  margin: 10px;
+
+  .images {
+    @include absolute-cover();
+    min-height: inherit;
+    bottom: 1em;
+  }
+
+  .image {
+    @include absolute-cover();
+    background-position: center;
+    background-size: cover;
+
+    &.secondary {
+      opacity: 0;
+    }
+  }
+
+  h3 {
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    color: black;
+    font-size: 0.7em;
+    font-weight: 200;
+    background-color: white;
+    padding: 0.3em;
+    width: 100%;
+  }
+
+  &:hover {
+    .image.secondary {
+      opacity: 1;
+    }
+  }
 }

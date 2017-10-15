@@ -29,5 +29,17 @@ export default Model.extend({
         return app.state.brands.getOptimist(this.brandId);
       },
     },
+    primaryImageUrl: {
+      deps: ['images'],
+      fn() {
+        return this.images[0];
+      },
+    },
+    secondaryImageUrl: {
+      deps: ['images'],
+      fn() {
+        return this.images[1];
+      },
+    }
   },
 });
