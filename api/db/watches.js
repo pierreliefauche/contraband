@@ -67,6 +67,16 @@ class WatchesStore {
     });
   }
 
+  deleteNulls(object) {
+    Object.keys(object).forEach(k => {
+      if (object[k] == null) {
+        delete object[k];
+      }
+    });
+
+    return object;
+  }
+
   upsert(watches, cb) {
     watches = [].concat(watches);
 
@@ -85,7 +95,7 @@ class WatchesStore {
               createdAt: now,
             },
             $set: {
-              ...watch,
+              ...this.deleteNulls(watch),
               _id: watch.id,
               updatedAt: now,
             },
