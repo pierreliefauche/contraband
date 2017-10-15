@@ -8,6 +8,8 @@ const Scraper = require('../../lib').Scraper;
 
 module.exports = (() => {
   const self = (config = {}) => {
+    self.db = config.db;
+
     const router = new express.Router();
 
     router.get('/scrap/:dealerId', self.scrapDealer);
@@ -43,11 +45,16 @@ module.exports = (() => {
           return cb(err);
         }
 
-        // TODO: save items
-
-        return cb();
+        return self.db.watches.upsert(items, cb);
       });
-    }, next);
+    }, (err) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.status(204).send();
+    });
   };
 
   self.failTo404 = (req, res, next) => {
