@@ -60,11 +60,12 @@ module.exports = (() => {
         return next(err);
       }
 
-      if (meta.nextPage) {
-        res.set('X-Next-Page', meta.nextPage);
-      }
-
-      return res.json(watches);
+      return res.json({
+        data: watches,
+        meta: {
+          nextPage: meta.nextPage
+        },
+      });
     });
   };
 
