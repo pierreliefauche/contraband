@@ -44,6 +44,8 @@ module.exports = (() => {
         }
 
         // TODO: save items
+
+        return cb();
       });
     }, next);
   };
