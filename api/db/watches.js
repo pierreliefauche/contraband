@@ -62,7 +62,7 @@ class WatchesStore {
   upsert(watches, cb) {
     watches = [].concat(watches);
 
-    const now = Date.now();
+    const now = new Date();
 
     async.each(watches, (watch, cb) => {
       this.writeCargo.push({
@@ -76,7 +76,6 @@ class WatchesStore {
             },
             $set: {
               ...this.deleteNulls(watch),
-              _id: watch.id,
               updatedAt: now,
             },
           },
@@ -119,6 +118,9 @@ class WatchesStore {
         meta.nextPage = watches[limit]._id.toHexString();
         watches = watches.slice(0, limit);
       }
+
+      // Remove _id
+      watches.forEach(w => delete w._id);
 
       return cb(null, watches, meta);
     });
