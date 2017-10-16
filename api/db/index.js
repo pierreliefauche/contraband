@@ -2,6 +2,7 @@
 
 const MongoClient = require('mongodb').MongoClient;
 const WatchesStore = require('./watches');
+const UsersStore = require('./users');
 
 exports.init = (options, cb)=> {
   MongoClient.connect(options.url, (err, mongoClient)=> {
@@ -11,6 +12,7 @@ exports.init = (options, cb)=> {
 
     return cb(null, {
       watches: new WatchesStore(mongoClient),
+      users: new UsersStore(mongoClient),
     });
   });
 };

@@ -19,6 +19,10 @@ module.exports = (() => {
     router.get('/watches', self.listWatches);
 
     router.use('/user', middlewares.fbAuth.requireUser());
+    router.get('/user', self.getUser);
+    router.put('/user/lastVisitedAt', self.bumpUserLastVisitedAt);
+    router.put('/user/favoriteIds/:watchId', self.addUserFavorite);
+    router.delete('/user/favoriteIds/:watchId', self.deleteUserFavorite);
 
     router.get('/scrap/:dealerId', self.scrapDealer);
     router.get('/scrap-and-save/all', self.scrapAndSaveDealers);
@@ -107,6 +111,62 @@ module.exports = (() => {
       }
 
       return res.status(204).send();
+    });
+  };
+
+  self.getUser = (req, res, next) => {
+    self.db.users.findById(req.user.id, (err, user) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.json(user || {});
+    });
+  };
+
+  self.bumpUserLastVisitedAt = (req, res, next) => {
+    const patch = {
+      $set: { lastVisitedAt: new Date() },
+    };
+
+    self.db.users.patch(req.user.id, patch, (err) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.status(202).send();
+    });
+  };
+
+  self.addUserFavorite = (req, res, next) => {
+    const patch = {
+      $addToSet: { favoriteIds: req.params.watchId },
+    };
+
+    self.db.users.patch(req.user.id, patch, (err) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.status(202).send();
+    });
+  };
+
+  self.deleteUserFavorite = (req, res, next) => {
+    const patch = {
+      $pull: { favoriteIds: req.params.watchId },
+    };
+
+    self.db.users.patch(req.user.id, patch, (err) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.status(202).send();
     });
   };
 
