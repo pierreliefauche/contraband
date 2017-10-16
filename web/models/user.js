@@ -31,11 +31,15 @@ export default Model.extend({
   },
 
   login() {
-    FB.login(this.onLoginStatusChange.bind(this));
+    if (typeof FB !== 'undefined') {
+      FB.login(this.onLoginStatusChange.bind(this));
+    }
   },
 
   checkLoginStatus() {
-    FB.getLoginStatus(this.onLoginStatusChange.bind(this));
+    if (typeof FB !== 'undefined') {
+      FB.getLoginStatus(this.onLoginStatusChange.bind(this));
+    }
   },
 
   onLoginStatusChange(res) {

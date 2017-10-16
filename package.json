@@ -5,8 +5,8 @@
   "main": "src",
   "description": "Far from fake",
   "scripts": {
-    "web-copy": "copyfiles -f ./web/index.html ./web-dist",
-    "web-build": "rm -r ./web-dist & npm run web-copy & webpack --env=dist",
+    "web-copy": "copyfiles -f ./web-dist",
+    "web-build": "rm -r ./web-dist & webpack --env=dist",
     "web-dev": "WEBPACK_ENV=dev node_modules/.bin/webpack-dev-server --host 0.0.0.0",
     "api-dev": "./dev/run.sh",
     "api-serve": "node api",
@@ -46,6 +46,7 @@
     "domready": "^1.0.8",
     "ejs-loader": "^0.3.0",
     "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
     "json-loader": "^0.5.7",
     "minimist": "^1.2.0",
     "node-sass": "^4.5.3",

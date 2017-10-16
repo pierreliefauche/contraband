@@ -4,6 +4,7 @@ const path = require('path');
 const _ = require('lodash');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const args = require('minimist')(process.argv.slice(2));
 
 const port = 8000;
@@ -20,9 +21,9 @@ process.env.WEBPACK_ENV = process.env.WEBPACK_ENV || env;
 const baseConfig = {
   output: {
     path: path.join(__dirname, '/web-dist'),
-    filename: 'app.js',
+    filename: 'app.[hash].js',
     publicPath,
-    sourceMapFilename: 'app.js.map',
+    sourceMapFilename: 'app.[hash].js.map',
   },
   devServer: {
     contentBase: srcPath,
@@ -38,6 +39,9 @@ const baseConfig = {
       React: 'react',
     //   $: 'jquery',
     //   jQuery: 'jquery',
+    }),
+    new HtmlWebpackPlugin({
+      template: srcPath + '/index.html',
     }),
   ],
   resolve: {

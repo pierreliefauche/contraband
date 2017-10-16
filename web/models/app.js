@@ -21,7 +21,7 @@ export default State.extend({
 
   children: {
     user: User,
-  }
+  },
 
   initialize() {
     this.initLastVisitDate();

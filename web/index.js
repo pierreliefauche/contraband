@@ -16,8 +16,10 @@ if (config.fbAppId) {
       version: 'v2.10'
     });
     FB.AppEvents.logPageView();
+    if (window.app) {
+      window.app.state.user.checkLoginStatus();
+    }
   };
-
 
   (function(d, id){
     let js, b = d.body;
