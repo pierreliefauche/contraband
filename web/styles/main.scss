@@ -53,6 +53,20 @@ h1 {
   height: 300px;
   margin: 10px;
 
+  &.sold:before {
+    content: 'SOLD';
+    position: absolute;
+    z-index: 2;
+    color: white;
+    background: black;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    padding: 0.8em;
+    font-size: 0.8em;
+    right: 0;
+    top: 0;
+  }
+
   .images {
     @include absolute-cover();
     min-height: inherit;
