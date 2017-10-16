@@ -64,7 +64,7 @@ class WatchesStore {
 
     const now = new Date();
 
-    async.each(watches, (watch, cb) => {
+    async.each(watches.reverse(), (watch, cb) => {
       this.writeCargo.push({
         updateOne: {
           filter: {
