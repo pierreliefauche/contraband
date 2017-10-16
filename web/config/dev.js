@@ -9,6 +9,7 @@ const config = {
   sentryPublicDsn: null,
   sentryRealase: 'dev',
   mixpanelToken: null,
+  fbAppId: null,
 };
 
 export default Object.freeze(Object.assign({}, baseConfig, config));

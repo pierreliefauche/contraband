@@ -1,10 +1,12 @@
 import app from 'ampersand-app';
 import Router from './router';
 import AppState from 'models/app'
+import User from 'models/user'
 
 export default app.extend({
   router: new Router(),
   state: new AppState(),
+  user: new User(),
 
   init() {
     this.state.fetchInitialData();
