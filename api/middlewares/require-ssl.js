@@ -16,7 +16,7 @@ function getReqUrl(req, ssl = true) {
 }
 
 module.exports = function requireSSL(shouldSsl = true) {
-  return (req, res, next)=> {
+  return (req, res, next) => {
     if (Boolean(utils.isReqSecure(req)) === Boolean(shouldSsl)) {
       return next();
     }

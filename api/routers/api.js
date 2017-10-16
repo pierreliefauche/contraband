@@ -3,6 +3,7 @@
 const log = global.log;
 const express = require('express');
 const async = require('async');
+const middlewares = require('../middlewares');
 const brands = require('../../lib').brands;
 const dealers = require('../../lib').dealers;
 const Scraper = require('../../lib').Scraper;
@@ -16,6 +17,8 @@ module.exports = (() => {
     router.get('/brands', self.listBrands);
     router.get('/dealers', self.listDealers);
     router.get('/watches', self.listWatches);
+
+    router.use('/user', middlewares.fbAuth.requireUser());
 
     router.get('/scrap/:dealerId', self.scrapDealer);
     router.get('/scrap-and-save/all', self.scrapAndSaveDealers);

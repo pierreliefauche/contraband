@@ -1,17 +1,17 @@
 'use strict';
 
 module.exports = function sendError() {
-  return (err, req, res, next)=> { // eslint-disable-line no-unused-vars
+  return (err, req, res, next) => { // eslint-disable-line no-unused-vars
     global.log.error(err);
 
-    const statusCode = (()=> {
+    const statusCode = (() => {
       if (typeof err.code === 'number' && err.code >= 400 && err.code < 600) {
         return err.code;
       }
       return 500;
     })();
 
-    const message = (()=> {
+    const message = (() => {
       if (err.message) {
         return err.message;
       }

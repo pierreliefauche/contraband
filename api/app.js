@@ -53,6 +53,8 @@ require('./db').init({ url: config.mongoUrl }, (err, db) => {
     stream: { write(message) { log.info(message.trim()); } },
   }));
 
+  app.use(middlewares.fbAuth(config.fbApp));
+
   // Routing
   app.use(middlewares.requireSSL(config.env !== 'development'));
   app.use('/api', routers.api({ db }));

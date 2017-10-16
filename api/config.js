@@ -12,6 +12,10 @@ const config = {
   redisUrl: process.env.REDIS_URL || process.env.REDISTOGO_URL,
   mongoUrl: process.env.MONGODB_URL,
   sentryDsn: process.env.SENTRY_DSN,
+  fbApp: {
+    id: process.env.FB_APP_ID,
+    secret: process.env.FB_APP_SECRET,
+  },
 };
 
 module.exports = config;
