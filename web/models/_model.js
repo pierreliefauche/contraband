@@ -17,8 +17,10 @@ export default Model.extend(xhrMixin, {
   },
 
   fetch: function() {
-    this.fetched = true;
-    return Model.prototype.fetch.apply(this, arguments);
+    if (!this.xhrFetching) {
+      this.fetched = true;
+      return Model.prototype.fetch.apply(this, arguments);
+    }
   },
 
   removeFromCollection() {

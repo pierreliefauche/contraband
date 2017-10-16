@@ -1,25 +1,26 @@
 export default {
-  ajaxConfig: function() {
+  ajaxConfig() {
     return {
       // headers: {},
       xhrFields: {
         withCredentials: true,
       },
-      // beforeSend: function(xhr) {
-      //   app.state.loading++;
+      beforeSend: function(xhr) {
+        // app.state.loading++;
+        this.xhrFetching = true;
 
-      //   let didDecrement = false;
-      //   const decrement = () => {
-      //     if (!didDecrement) {
-      //       didDecrement = true;
-      //       app.state.loading--;
-      //     }
-      //   };
+        let alreadyEnded = false;
+        const didEnd = () => {
+          if (!alreadyEnded) {
+            alreadyEnded = true;
+            this.xhrFetching = false;
+          }
+        };
 
-      //   ['load', 'error', 'abort'].forEach(e => {
-      //     xhr.addEventListener(e, decrement);
-      //   });
-      // },
+        ['load', 'error', 'abort'].forEach(e => {
+          xhr.addEventListener(e, didEnd);
+        });
+      },
     };
   },
 };

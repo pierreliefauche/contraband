@@ -26,8 +26,10 @@ export default Collection.extend(xhrMixin, {
   },
 
   fetch(options = {}) {
-    this.fetched = true;
-    return Collection.prototype.fetch.call(this, options);
+    if (!this.xhrFetching) {
+      this.fetched = true;
+      return Collection.prototype.fetch.call(this, options);
+    }
   },
 
   hasNextPage() {
