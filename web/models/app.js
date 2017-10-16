@@ -1,4 +1,5 @@
 import State from 'ampersand-state';
+import User from 'models/user';
 import BrandCollection from 'models/brand-collection';
 import DealerCollection from 'models/dealer-collection';
 import WatchCollection from 'models/watch-collection';
@@ -17,6 +18,10 @@ export default State.extend({
     dealers: DealerCollection,
     watches: WatchCollection,
   },
+
+  children: {
+    user: User,
+  }
 
   initialize() {
     this.initLastVisitDate();
