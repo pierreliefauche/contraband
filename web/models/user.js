@@ -47,13 +47,14 @@ export default Model.extend({
 
   onLoginStatusChange(res) {
     if (res.status === 'connected' && res.authResponse && res.authResponse.userID) {
-      this.userId = res.authResponse.userId;
-      this.fetch();
-      this.mayBumpLastVisitedAt();
+      this.fetch(() => {
+        this.userId = res.authResponse.userId;
+        this.mayBumpLastVisitedAt();
 
-      const cbs = this.postAuthCbs;
-      this.postAuthCbs = [];
-      cbs.forEach(cb => cb());
+        const cbs = this.postAuthCbs;
+        this.postAuthCbs = [];
+        cbs.forEach(cb => cb());
+      });
     }
     else {
       this.userId = null;
