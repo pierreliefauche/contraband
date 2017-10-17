@@ -16,7 +16,8 @@ export default Model.extend({
   },
 
   session: {
-    userId: ['string', false]
+    userId: ['string', false],
+    postAuthCbs: ['array', 'true', () => ([])],
   },
 
   derived: {
@@ -49,13 +50,27 @@ export default Model.extend({
       this.userId = res.authResponse.userId;
       this.fetch();
       this.mayBumpLastVisitedAt();
+
+      const cbs = this.postAuthCbs;
+      this.postAuthCbs = [];
+      cbs.forEach(cb => cb());
     }
     else {
       this.userId = null;
       this.favorites.reset();
+      this.postAuthCbs = [];
     }
 
     this.favorites.reset();
+  },
+
+  requiresAuth(cb) {
+    if (this.loggedIn) {
+      return cb();
+    }
+
+    this.postAuthCbs.push(cb);
+    this.login();
   },
 
   mayBumpLastVisitedAt() {
@@ -73,33 +88,41 @@ export default Model.extend({
 
   addFavorite(watch) {
     if (!this.favoriteIds.includes(watch.id)) {
-      xhr({
-        method: 'PUT',
-        url: `${this.url()}/favoriteIds/${encodeURIComponent(watch.id)}`,
-      }, (err) => {
-        if (err) {
-          console.error('Failed to add favorite');
-          this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
-        }
-      });
+      this.requiresAuth(() => {
+        xhr({
+          method: 'PUT',
+          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.id)}`,
+        }, (err) => {
+          if (err) {
+            console.error('Failed to add favorite');
+            this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
+            watch.favorited = false;
+          }
+        });
 
-      this.favoriteIds.push(watch.id);
+        this.favoriteIds.push(watch.id);
+        watch.favorited = true;
+      });
     }
   },
 
   removeFavorite(watch) {
     if (this.favoriteIds.includes(watch.id)) {
-      xhr({
-        method: 'DELETE',
-        url: `${this.url()}/favoriteIds/${encodeURIComponent(watch.id)}`,
-      }, (err) => {
-        if (err) {
-          console.error('Failed to remove favorite');
-          this.favoriteIds.push(watch.id);
-        }
-      });
+      this.requiresAuth(() => {
+        xhr({
+          method: 'DELETE',
+          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.id)}`,
+        }, (err) => {
+          if (err) {
+            console.error('Failed to remove favorite');
+            this.favoriteIds.push(watch.id);
+            watch.favorited = true;
+          }
+        });
 
-      this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
+        this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
+        watch.favorited = false;
+      });
     }
   },
 });

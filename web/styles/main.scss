@@ -4,7 +4,7 @@ html {
   touch-action: manipulation;
 }
 
-body {
+body, button, input {
   font-family: Avenir, system, sans-serif;
 }
 
@@ -127,6 +127,8 @@ h1 {
     letter-spacing: 1px;
     font-size: 0.8em;
     transform: translateY(-1.5em);
+    border: none;
+    cursor: pointer;
 
     &:after {
       content: '?';

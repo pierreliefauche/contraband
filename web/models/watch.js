@@ -16,6 +16,10 @@ export default Model.extend({
     updatedAt: ['date', true],
   },
 
+  session: {
+    favorited: ['boolean', true, false],
+  },
+
   derived: {
     dealer: {
       deps: ['dealerId'],

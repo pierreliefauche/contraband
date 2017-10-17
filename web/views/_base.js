@@ -17,7 +17,7 @@ class BaseView extends React.Component {
   componentDidMount() {
     if (this.autoWatch !== false) {
       Object.keys(this.props).forEach(k => {
-        this._watchState(this.props[k]);
+        this.listenToState(this.props[k]);
       });
     }
   }
@@ -26,7 +26,7 @@ class BaseView extends React.Component {
     this.stopListening();
   }
 
-  _watchState(modelOrCollection) {
+  listenToState(modelOrCollection) {
     let events;
 
     if (modelOrCollection != null && typeof modelOrCollection === 'object'){
