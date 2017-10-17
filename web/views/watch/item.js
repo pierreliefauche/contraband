@@ -6,6 +6,7 @@ export default class WatchItem extends BaseView {
     const { watch } = this.props;
     return (
       <a href={watch.url} target="_blank" className={classNames('watch', {sold: watch.sold, 'has-price': watch.price})}>
+        <div className={classNames('favorite')}>Favorite</div>
         <div className="images">
           <div className="image" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>
           {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
