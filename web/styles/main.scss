@@ -56,12 +56,14 @@ h1 {
   .images {
     @include absolute-cover();
     // min-height: 100;
+    text-align: center;
   }
 
   .image {
     @include absolute-cover();
     background-position: center;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
 
     &.secondary {
       opacity: 0;
