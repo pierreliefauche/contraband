@@ -18,7 +18,7 @@ export default class WatchList extends BaseView {
           // threshold={700}
           className="list flex-fill-row absolute-cover">
           {watches.map(watch => {
-            return <WatchItem key={watch.id} watch={watch}/>;
+            return <WatchItem key={watch.getId()} watch={watch}/>;
           })}
         </InfiniteScroll>
       </div>

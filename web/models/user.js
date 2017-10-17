@@ -88,40 +88,40 @@ export default Model.extend({
   },
 
   addFavorite(watch) {
-    if (!this.favoriteIds.includes(watch.id)) {
+    if (!this.favoriteIds.includes(watch.getId())) {
       this.requiresAuth(() => {
         xhr({
           method: 'PUT',
-          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.id)}`,
+          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.getId())}`,
         }, (err) => {
           if (err) {
             console.error('Failed to add favorite');
-            this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
+            this.favoriteIds = this.favoriteIds.filter(id => id !== watch.getId());
             watch.favorited = false;
           }
         });
 
-        this.favoriteIds.push(watch.id);
+        this.favoriteIds.push(watch.getId());
         watch.favorited = true;
       });
     }
   },
 
   removeFavorite(watch) {
-    if (this.favoriteIds.includes(watch.id)) {
+    if (this.favoriteIds.includes(watch.getId())) {
       this.requiresAuth(() => {
         xhr({
           method: 'DELETE',
-          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.id)}`,
+          url: `${this.url}/favoriteIds/${encodeURIComponent(watch.getId())}`,
         }, (err) => {
           if (err) {
             console.error('Failed to remove favorite');
-            this.favoriteIds.push(watch.id);
+            this.favoriteIds.push(watch.getId());
             watch.favorited = true;
           }
         });
 
-        this.favoriteIds = this.favoriteIds.filter(id => id !== watch.id);
+        this.favoriteIds = this.favoriteIds.filter(id => id !== watch.getId());
         watch.favorited = false;
       });
     }

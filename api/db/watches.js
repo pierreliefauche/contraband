@@ -119,8 +119,8 @@ class WatchesStore {
         watches = watches.slice(0, limit);
       }
 
-      // Remove _id
-      watches.forEach(w => delete w._id);
+      // Remove id
+      watches.forEach(w => delete w.id);
 
       return cb(null, watches, meta);
     });

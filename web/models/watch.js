@@ -2,8 +2,10 @@ import Model from 'models/_model';
 import app from 'ampersand-app';
 
 export default Model.extend({
+  idAttribute: '_id',
+
   props: {
-    id: ['string', true],
+    _id: ['string', true],
     url: ['string', true],
     title: ['string', true],
     description: ['string', false],
