@@ -40,6 +40,13 @@ export default Model.extend({
       fn() {
         return this.images[1];
       },
-    }
+    },
+    priceLabel: {
+      deps: ['price'],
+      fn() {
+        const cur = {'USD': '$', 'EUR': '€', 'GBP': '£'}[this.price.currency] || this.price.currency || '$';
+        return `${cur} ${this.price.value.toLocaleString()}`;
+      }
+    },
   },
 });

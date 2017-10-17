@@ -5,12 +5,13 @@ export default class WatchItem extends BaseView {
   render() {
     const { watch } = this.props;
     return (
-      <a href={watch.url} target="_blank" className={classNames('watch', {sold: watch.sold})}>
+      <a href={watch.url} target="_blank" className={classNames('watch', {sold: watch.sold, 'has-price': watch.price})}>
         <div className="images">
-          <div className="image" style={{'background-image': `url(${watch.primaryImageUrl})`}}></div>
-          {watch.secondaryImageUrl ? <div className="image secondary" style={{'background-image': `url(${watch.secondaryImageUrl})`}}></div> : undefined}
+          <div className="image" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>
+          {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
         </div>
         <h3>{watch.title}</h3>
+        {watch.price ? <span className="price">{watch.priceLabel}</span> : undefined}
       </a>
     );
   }
