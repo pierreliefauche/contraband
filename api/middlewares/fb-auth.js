@@ -7,6 +7,7 @@ const signWithSecret = (secret, str) => {
   let signature = crypto.createHmac('sha256', secret).update(str).digest('base64');
   signature = signature.replace(/=/g, '');
   signature = signature.replace(/\//g, '_');
+  signature = signature.replace(/\+/g, '-');
   return signature;
 };
 
@@ -18,7 +19,7 @@ module.exports = function fbAuth(fbApp = {}) {
   const sign = signWithSecret.bind(this, fbApp.secret);
 
   return (req, res, next) => {
-    const token = req.get(`fbsr_${fbApp.id}`);
+    const token = req.cookies[`fbsr_${fbApp.id}`];
     if (token) {
       const [signature, payload] = token.split('.');
       if (signature === sign(payload)) {

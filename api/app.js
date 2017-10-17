@@ -10,6 +10,7 @@ const compression = require('compression');
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const Raven = require('raven');
 
 const config = require('./config');
@@ -46,6 +47,7 @@ require('./db').init({ url: config.mongoUrl }, (err, db) => {
   app.use(hpp());
   app.use(helmet({ hsts: false }));
   app.use(compression());
+  app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
 
