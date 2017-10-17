@@ -48,7 +48,7 @@ export default Model.extend({
   onLoginStatusChange(res) {
     if (res.status === 'connected' && res.authResponse && res.authResponse.userID) {
       this.fetch(() => {
-        this.userId = res.authResponse.userId;
+        this.userId = res.authResponse.userID;
         this.mayBumpLastVisitedAt();
 
         const cbs = this.postAuthCbs;
