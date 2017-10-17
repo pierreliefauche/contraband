@@ -77,7 +77,7 @@ export default Model.extend({
     setTimeout(() => {
       xhr({
         method: 'PUT',
-        url: `${this.url()}/lastVisitedAt`,
+        url: `${this.url}/lastVisitedAt`,
       }, (err) => {
         if (err) {
           console.error('Failed to update last visited at')
