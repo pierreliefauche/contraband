@@ -44,6 +44,10 @@ export default Model.extend({
     priceLabel: {
       deps: ['price'],
       fn() {
+        if (!this.price) {
+          return '';
+        }
+
         const cur = {'USD': '$', 'EUR': '€', 'GBP': '£'}[this.price.currency] || this.price.currency || '$';
         return `${cur} ${this.price.value.toLocaleString()}`;
       }

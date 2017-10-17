@@ -48,15 +48,19 @@ h1 {
 }
 
 .watch {
+  $watch-width: 250px;
+
   position: relative;
-  flex: 0 0 250px;
-  height: 300px;
+  flex: 0 0 $watch-width;
   margin: 10px;
+  text-align: center;
 
   .images {
-    @include absolute-cover();
-    // min-height: 100;
+    position: relative;
+    width: 100%;
+    height: $watch-width * 1.2;
     text-align: center;
+    margin-bottom: 0.2em;
   }
 
   .image {
@@ -71,54 +75,34 @@ h1 {
   }
 
   h3 {
-    position: absolute;
-    bottom: 0;
+    max-width: $watch-width;
+    display: block;
     margin: 0;
     color: black;
-    font-size: 0.7em;
-    font-weight: 200;
-    background-color: white;
+    font-size: 0.8em;
+    font-weight: 100;
     padding: 0.3em;
-    width: 100%;
     text-align: center;
-    -webkit-backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.8);
-  }
-
-  .price,
-  &.sold:before {
-    position: absolute;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    padding: 0.7em;
-    font-size: 0.7em;
-    right: 0;
-    top: 0;
-    -webkit-backdrop-filter: blur(10px);
-    content: 'SOLD';
-    z-index: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   .price {
     color: black;
-    background: rgba(255, 255, 255, 0.8);
-    z-index: 3;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    padding: 0.7em;
+    font-size: 0.7em;
+    display: inline-block;
   }
 
   &.sold {
-    .price,
-    &:before {
-      color: white;
-      background: rgba(0, 0, 0, 0.8);
-    }
-
     .price {
-      text-decoration: line-through;
-    }
-
-    &:hover {
-      .price {
-        z-index: -1;
+      color: white;
+      background-color: black;
+      &:after {
+        content: ' SOLD';
       }
     }
   }

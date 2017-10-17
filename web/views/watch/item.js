@@ -11,7 +11,7 @@ export default class WatchItem extends BaseView {
           {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
         </div>
         <h3>{watch.title}</h3>
-        {watch.price ? <span className="price">{watch.priceLabel}</span> : undefined}
+        <span className="price">{watch.priceLabel}</span>
       </a>
     );
   }
