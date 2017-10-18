@@ -26,7 +26,7 @@ export default class WatchItem extends BaseView {
 
     return (
       <article  className={classnames}>
-        <a href={watch.url} target="_blank" className="images">
+        <a href={watch.dealerUrl} target="_blank" className="images">
           <div className="image" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>
           {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
         </a>

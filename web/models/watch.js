@@ -1,15 +1,19 @@
 import Model from 'models/_model';
+import config from 'config';
 
 export default Model.extend({
   idAttribute: '_id',
 
-  url() {
-    return `${config.apiRoot}/watches/${encodeURIComponent(this.getId())}`;
+  parse: function() {
+    const data = Model.prototype.parse.apply(this, arguments);
+    data.dealerUrl = data.url;
+    delete data.url;
+    return data;
   },
 
   props: {
     _id: ['string', true],
-    url: ['string', true],
+    dealerUrl: ['string', true],
     title: ['string', true],
     description: ['string', false],
     images: ['array', true],
