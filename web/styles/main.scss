@@ -175,4 +175,11 @@ h1 {
       }
     }
   }
+
+  &.dealer--lunaroyster_com,
+  &.dealer--mentawatches_com {
+    .image {
+      background-size: cover;
+    }
+  }
 }
