@@ -12,6 +12,15 @@ const signWithSecret = (secret, str) => {
 };
 
 module.exports = function fbAuth(fbApp = {}) {
+  if (fbApp.forceUserId) {
+    return (req, res, next) => {
+      req.user = {
+        id: fbApp.forceUserId,
+      };
+      return next();
+    };
+  }
+
   if (!(fbApp.id && fbApp.secret)) {
     return (req, res, next) => { next(); };
   }

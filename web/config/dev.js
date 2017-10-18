@@ -10,6 +10,7 @@ const config = {
   sentryRealase: 'dev',
   mixpanelToken: null,
   fbAppId: null,
+  fakeFbUser: true,
 };
 
 export default Object.freeze(Object.assign({}, baseConfig, config));

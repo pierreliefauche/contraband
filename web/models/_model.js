@@ -1,8 +1,6 @@
 import Model from 'ampersand-model';
 import xhrMixin from 'helpers/xhr-mixin';
 
-let app = require('ampersand-app');
-
 export default Model.extend(xhrMixin, {
   idAttribute: 'id',
 

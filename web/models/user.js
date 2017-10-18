@@ -7,6 +7,10 @@ export default Model.extend({
   url: `${config.apiRoot}/user`,
 
   initialize() {
+    if (config.fakeFbUser) {
+      this.userId = 'fake';
+      this.resetUser();
+    }
     this.checkLoginStatus();
   },
 
@@ -29,10 +33,6 @@ export default Model.extend({
     }
   },
 
-  collections: {
-    favorites: WatchCollection,
-  },
-
   login() {
     if (typeof FB !== 'undefined') {
       FB.login(this.onLoginStatusChange.bind(this));
@@ -46,23 +46,22 @@ export default Model.extend({
   },
 
   onLoginStatusChange(res) {
-    if (res.status === 'connected' && res.authResponse && res.authResponse.userID) {
-      this.fetch(() => {
-        this.userId = res.authResponse.userID;
-        this.mayBumpLastVisitedAt();
+    this.userId = (res.status === 'connected' && res.authResponse && res.authResponse.userID);
+    this.resetUser();
+  },
 
-        const cbs = this.postAuthCbs;
-        this.postAuthCbs = [];
-        cbs.forEach(cb => cb());
-      });
+  resetUser() {
+    if (this.userId) {
+      this.fetch();
+      this.mayBumpLastVisitedAt();
+      const cbs = this.postAuthCbs;
+      this.postAuthCbs = [];
+      cbs.forEach(cb => cb());
     }
     else {
-      this.userId = null;
       this.favorites.reset();
       this.postAuthCbs = [];
     }
-
-    this.favorites.reset();
   },
 
   requiresAuth(cb) {
@@ -72,6 +71,10 @@ export default Model.extend({
 
     this.postAuthCbs.push(cb);
     this.login();
+  },
+
+  hasFavorited(watch) {
+    return this.favoriteIds.includes(watch.getId());
   },
 
   mayBumpLastVisitedAt() {
@@ -96,13 +99,11 @@ export default Model.extend({
         }, (err) => {
           if (err) {
             console.error('Failed to add favorite');
-            this.favoriteIds = this.favoriteIds.filter(id => id !== watch.getId());
-            watch.favorited = false;
+            this.favoriteIds = this.favoriteIds.splice(id => id !== watch.getId());
           }
         });
 
-        this.favoriteIds.push(watch.getId());
-        watch.favorited = true;
+        this.favoriteIds = this.favoriteIds.concat(watch.getId());
       });
     }
   },
@@ -116,13 +117,11 @@ export default Model.extend({
         }, (err) => {
           if (err) {
             console.error('Failed to remove favorite');
-            this.favoriteIds.push(watch.getId());
-            watch.favorited = true;
+            this.favoriteIds = this.favoriteIds.concat(watch.getId());
           }
         });
 
         this.favoriteIds = this.favoriteIds.filter(id => id !== watch.getId());
-        watch.favorited = false;
       });
     }
   },

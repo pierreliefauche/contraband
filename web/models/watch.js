@@ -1,5 +1,4 @@
 import Model from 'models/_model';
-import app from 'ampersand-app';
 
 export default Model.extend({
   idAttribute: '_id',
@@ -16,10 +15,6 @@ export default Model.extend({
     brandId: ['string', false],
     createdAt: ['date', true],
     updatedAt: ['date', true],
-  },
-
-  session: {
-    favorited: ['boolean', true, false],
   },
 
   derived: {

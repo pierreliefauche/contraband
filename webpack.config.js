@@ -37,6 +37,7 @@ const baseConfig = {
     new webpack.ProvidePlugin({
       _: 'lodash',
       React: 'react',
+      app: 'ampersand-app',
     //   $: 'jquery',
     //   jQuery: 'jquery',
     }),

@@ -13,6 +13,7 @@ const config = {
   mongoUrl: process.env.MONGODB_URL,
   sentryDsn: process.env.SENTRY_DSN,
   fbApp: {
+    forceUserId: process.env.FB_FORCE_USER_ID,
     id: process.env.FB_APP_ID,
     secret: process.env.FB_APP_SECRET,
   },
