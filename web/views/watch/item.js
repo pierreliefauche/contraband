@@ -17,9 +17,15 @@ export default class WatchItem extends BaseView {
 
   render() {
     const { watch, user } = this.props;
+    const classnames = classNames('watch', {
+      sold: watch.sold,
+      'has-price': watch.price,
+      'favorited': user.hasFavorited(watch),
+      'new': user.hasSeen(watch),
+    });
 
     return (
-      <a href={watch.url} target="_blank" className={classNames('watch', {sold: watch.sold, 'has-price': watch.price, 'favorited': user.hasFavorited(watch)})}>
+      <a href={watch.url} target="_blank" className={classnames}>
         <button className={classNames('favorite')} onClick={this.toggleFavorite.bind(this)}>Favorite</button>
         <div className="images">
           <div className="image" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>

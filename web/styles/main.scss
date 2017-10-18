@@ -54,6 +54,7 @@ h1 {
   position: relative;
   flex: 0 0 $watch-width;
   margin: 10px;
+  margin-bottom: 2em;
   text-align: center;
 
   .images {
@@ -99,6 +100,16 @@ h1 {
     display: inline-block;
   }
 
+  &.new {
+    .price {
+      color: black;
+      background-color: #ffe5ce;
+      &:before {
+        content: 'NEW ';
+      }
+    }
+  }
+
   &.sold {
     .price {
       color: white;
@@ -108,6 +119,7 @@ h1 {
       }
     }
   }
+
 
   .favorite {
     z-index: 3;
