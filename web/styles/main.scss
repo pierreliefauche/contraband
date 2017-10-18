@@ -176,10 +176,24 @@ h1 {
     }
   }
 
+  &.dealer--bulangandsons_com,
   &.dealer--lunaroyster_com,
-  &.dealer--mentawatches_com {
+  &.dealer--mentawatches_com,
+  &.dealer--watchsteez_com {
     .image {
       background-size: cover;
+    }
+  }
+
+  &.dealer--hqmilton_com {
+    .image {
+      background-size: 130%;
+    }
+  }
+
+  &.dealer--ponti_collection_ch {
+    .image {
+      background-size: 160%;
     }
   }
 }
