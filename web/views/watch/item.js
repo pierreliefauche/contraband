@@ -23,7 +23,7 @@ export default class WatchItem extends BaseView {
       'favorited': user.hasFavorited(watch),
       'new': user.hasSeen(watch),
       [`dealer--${watch.dealerId.replace(/[^a-z0-9]/gi, '_')}`]: true,
-      [`brand--${watch.brandId.replace(/[^a-z0-9]/gi, '_')}`]: true,
+      [`brand--${(watch.brandId || '').replace(/[^a-z0-9]/gi, '_')}`]: watch.brandId,
     });
 
     return (
