@@ -25,15 +25,17 @@ export default class WatchItem extends BaseView {
     });
 
     return (
-      <a href={watch.url} target="_blank" className={classnames}>
-        <button className={classNames('favorite')} onClick={this.toggleFavorite.bind(this)}>Favorite</button>
-        <div className="images">
+      <article  className={classnames}>
+        <a href={watch.url} target="_blank" className="images">
           <div className="image" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>
           {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
-        </div>
+        </a>
         <h3>{watch.title}</h3>
-        <span className="price">{watch.priceLabel}</span>
-      </a>
+        <footer>
+          <span className="price">{watch.priceLabel}</span>
+          <button className={classNames('favorite')} onClick={this.toggleFavorite.bind(this)}></button>
+        </footer>
+      </article>
     );
   }
 };

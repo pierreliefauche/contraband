@@ -60,6 +60,7 @@ h1 {
   .images {
     z-index: 1;
     position: relative;
+    display: block;
     width: 100%;
     height: $images-height;
     text-align: center;
@@ -120,45 +121,36 @@ h1 {
     }
   }
 
-
   .favorite {
-    z-index: 3;
     position: absolute;
-    right: 0;
-    top: $images-height / 2;
-    max-width: 0px;
-    background-color: rgba(255, 240, 230, 0.75);
-    color: black;
-    -webkit-backdrop-filter: blur(10px);
-    transition: max-width 200ms ease, padding 200ms ease, background-color 200ms ease;
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 0.7em 0;
-    box-sizing: border-box;
-    font-weight: 500;
-    letter-spacing: 1px;
-    font-size: 0.8em;
-    transform: translateY(-1.5em);
     border: none;
+    right: 0;
+    padding-right: 0.3em;
+    min-width: 0;
+    background: rgba(255,255,255,0.7);
+    top: 0;
+    bottom: 0;
+    line-height: 200%;
+    font-size: 0.9em;
+    transition: min-width 200ms ease, opacity 200ms ease, font-size 300ms ease;
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
     cursor: pointer;
-
-    &:after {
-      content: '?';
-    }
-
-    &:hover {
-      background-color: rgba(0,0,0,0.75);
-      color: white;
-    }
+    padding: 0;
   }
 
   &.favorited {
     .favorite {
-      padding: 0.7em 0 0.7em 3px;
-      background-color: rgba(0,0,0,0.75);
-      color: white;
-      &:after {
-        content: ' 👍';
+      opacity: 1;
+    }
+
+    .favorite:before {
+      content: '👍';
+    }
+
+    &:hover {
+      .favorite:hover:before {
+        content: '👎';
       }
     }
   }
@@ -169,8 +161,18 @@ h1 {
     }
 
     .favorite {
-      padding: 0.7em 2em;
-      max-width: 30em;
+      opacity: 0.3;
+    }
+
+    footer:hover .favorite {
+      opacity: 1;
+      min-width: 100%;
+    }
+
+    .favorite {
+      &:before {
+        content: '👍';
+      }
     }
   }
 }
