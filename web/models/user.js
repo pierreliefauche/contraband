@@ -46,7 +46,7 @@ export default Model.extend({
   },
 
   onLoginStatusChange(res) {
-    this.userId = (res.status === 'connected' && res.authResponse && res.authResponse.userID);
+    this.userId = (res.status === 'connected' && res.authResponse && res.authResponse.userID) || null;
     this.resetUser();
   },
 

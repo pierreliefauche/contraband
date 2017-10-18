@@ -17,6 +17,7 @@ module.exports = (() => {
     router.get('/brands', self.listBrands);
     router.get('/dealers', self.listDealers);
     router.get('/watches', self.listWatches);
+    router.get('/watches/:watchId', self.getWatch);
 
     router.use('/user', middlewares.fbAuth.requireUser());
     router.get('/user', self.getUser);
@@ -73,6 +74,17 @@ module.exports = (() => {
           nextPage: meta.nextPage
         },
       });
+    });
+  };
+
+  self.getWatch = (req, res, next) => {
+    self.db.watches.findById(req.params.watchId, (err, watch) => {
+      if (err) {
+        log.error(err);
+        return next(err);
+      }
+
+      return res.json(watch);
     });
   };
 

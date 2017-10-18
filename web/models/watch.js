@@ -3,6 +3,10 @@ import Model from 'models/_model';
 export default Model.extend({
   idAttribute: '_id',
 
+  url() {
+    return `${config.apiRoot}/watches/${encodeURIComponent(this.getId())}`;
+  },
+
   props: {
     _id: ['string', true],
     url: ['string', true],

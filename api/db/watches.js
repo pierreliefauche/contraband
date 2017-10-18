@@ -7,7 +7,6 @@ const async = require('async');
 class WatchesStore {
   constructor(mongoClient) {
     this.mongoClient = mongoClient;
-
   }
 
   // Lazy-load collection
@@ -41,7 +40,7 @@ class WatchesStore {
 
   findById(watchId, cb) {
     const query = {
-      _id: watchId.toString(),
+      _id: ObjectID.createFromHexString(watchId),
     };
 
     this.collection.findOne(query, (err, watch) => {
