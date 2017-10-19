@@ -17,12 +17,12 @@ nav {
   left: 0;
   width: 5em;
   background: black;
+  color: white;
   overflow-x: hidden;
   transition: width 300ms ease;
   z-index: 2;
 
   h1 {
-    color: white;
     white-space: nowrap;
     margin: 0.1em;
     padding: 0;
@@ -31,8 +31,27 @@ nav {
     text-transform: uppercase;
   }
 
+  a {
+    width: 100%;
+    display: block;
+    color: inherit;
+    text-align: center;
+    padding: 1em;
+    margin: 1em 0;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: color 200ms ease, background-color 200ms ease;
+
+    &.current,
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
+
   &:hover {
-    width: 10em;
+    width: 7em;
   }
 }
 

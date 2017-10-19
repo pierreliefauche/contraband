@@ -1,25 +1,36 @@
 import app from 'ampersand-app';
 import Router from 'ampersand-router';
 import ReactDOM from 'react-dom';
-import HomePage from 'views/home-page';
 import WatchList from 'views/watch/list';
 import Layout from 'views/layout';
 
 export default Router.extend({
   routes: {
-    'watches/': 'listWatches',
-    '': 'catchAll',
+    '': 'listWatches',
+    'favorites/': 'listFavorites',
     '(*path)': 'catchAll',
   },
 
-  redirectTo(fragment) {
-    if (!fragment.endsWith('/')) {
-      fragment += '/';
+  normalizePath(path) {
+    if (!path.endsWith('/')) {
+      path += '/';
     }
-    if (fragment.startsWith('/')) {
-      fragment = fragment.substr(1);
+    if (path.startsWith('/')) {
+      path = path.substr(1);
     }
-    return Router.prototype.redirectTo.call(this, fragment);
+    return path;
+  },
+
+  isCurrent(path = '') {
+    return this.normalizePath(path) === this.normalizePath(window.location.pathname);
+  },
+
+  navigateTo(...args) {
+    return this.redirectTo(...args);
+  },
+
+  redirectTo(path = '') {
+    return Router.prototype.redirectTo.call(this, this.normalizePath(path));
   },
 
   renderPage(page, options = { layout: true }) {
@@ -36,7 +47,13 @@ export default Router.extend({
     this.renderPage(<WatchList watches={app.state.watches} />);
   },
 
+  listFavorites() {
+    app.state.user.requiresAuth(() => {
+      this.renderPage(<WatchList watches={app.state.user.favorites} />);
+    });
+  },
+
   catchAll() {
-    this.redirectTo('watches');
+    this.redirectTo('');
   },
 });

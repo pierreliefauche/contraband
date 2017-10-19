@@ -53,6 +53,7 @@ const baseConfig = {
     alias: {
       models: srcPath + '/models/',
       views: srcPath + '/views/',
+      components: srcPath + '/components/',
       styles: srcPath + '/styles/',
       helpers: srcPath + '/helpers/',
       config: srcPath + '/config/' + process.env.WEBPACK_ENV,

@@ -11,6 +11,7 @@ export default Model.extend({
       this.userId = 'fake';
       this.resetUser();
     }
+
     this.checkLoginStatus();
   },
 
@@ -33,6 +34,10 @@ export default Model.extend({
     }
   },
 
+  collections: {
+    favorites: WatchCollection,
+  },
+
   login() {
     if (typeof FB !== 'undefined') {
       FB.login(this.onLoginStatusChange.bind(this));
@@ -51,15 +56,21 @@ export default Model.extend({
   },
 
   resetUser() {
+    this.favorites.reset();
+
     if (this.userId) {
-      this.fetch();
-      this.mayBumpLastVisitedAt();
-      const cbs = this.postAuthCbs;
-      this.postAuthCbs = [];
-      cbs.forEach(cb => cb());
+      this.fetch({
+        success: () => {
+          this.mayBumpLastVisitedAt();
+          this.favoriteIds.forEach(id => this.favorites.getOrFetch(id));
+
+          const cbs = this.postAuthCbs;
+          this.postAuthCbs = [];
+          cbs.forEach(cb => cb());
+        }
+      });
     }
     else {
-      this.favorites.reset();
       this.postAuthCbs = [];
     }
   },
@@ -105,10 +116,12 @@ export default Model.extend({
           if (err) {
             console.error('Failed to add favorite');
             this.favoriteIds = this.favoriteIds.splice(id => id !== watch.getId());
+            this.favorites.remove(watch.getId());
           }
         });
 
         this.favoriteIds = this.favoriteIds.concat(watch.getId());
+        this.favorites.getOrFetch(watch.getId());
       });
     }
   },
@@ -123,10 +136,12 @@ export default Model.extend({
           if (err) {
             console.error('Failed to remove favorite');
             this.favoriteIds = this.favoriteIds.concat(watch.getId());
+            this.favorites.getOrFetch(watch.getId());
           }
         });
 
         this.favoriteIds = this.favoriteIds.filter(id => id !== watch.getId());
+        this.favorites.remove(watch.getId());
       });
     }
   },
