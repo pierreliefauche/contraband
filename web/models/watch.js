@@ -57,8 +57,11 @@ export default Model.extend({
           return '';
         }
 
-        const cur = {'USD': '$', 'EUR': '€', 'GBP': '£'}[this.price.currency] || this.price.currency || '$';
-        return `${cur} ${this.price.value.toLocaleString()}`;
+        const currency = this.price.usd ? 'USD' : this.price.currency;
+        const amount = this.price.usd ? this.price.usd : this.price.amount;
+
+        const cur = {'USD': '$', 'EUR': '€', 'GBP': '£'}[currency] || currency || '$';
+        return `${cur} ${amount.toLocaleString()}`;
       }
     },
   },

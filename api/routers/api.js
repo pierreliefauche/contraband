@@ -3,10 +3,8 @@
 const log = global.log;
 const express = require('express');
 const async = require('async');
-const middlewares = require('../middlewares');
-const brands = require('../../lib').brands;
-const dealers = require('../../lib').dealers;
-const Scraper = require('../../lib').Scraper;
+const { fbAuth } = require('../middlewares');
+const { brands, dealers, Scraper, money } = require('../../lib');
 
 module.exports = (() => {
   const self = (config = {}) => {
@@ -19,7 +17,7 @@ module.exports = (() => {
     router.get('/watches', self.listWatches);
     router.get('/watches/:watchId', self.getWatch);
 
-    router.use('/user', middlewares.fbAuth.requireUser());
+    router.use('/user', fbAuth.requireUser());
     router.get('/user', self.getUser);
     router.put('/user/lastVisitedAt', self.bumpUserLastVisitedAt);
     router.put('/user/favoriteIds/:watchId', self.addUserFavorite);
@@ -42,6 +40,25 @@ module.exports = (() => {
 
     return defaultLimit;
   }
+
+  self.formatWatch = (watch, cb) => {
+    if (!watch.price) {
+      return cb(null, watch);
+    }
+
+    money.convert(watch.price, 'USD', (err, usdAmount) => {
+      if (err) {
+        log.error(err);
+        // ignore error
+      }
+
+      if (usdAmount) {
+        watch.price.usd = usdAmount;
+      }
+
+      return cb(null, watch);
+    });
+  };
 
   self.listBrands = (req, res) => {
     return res.json(brands.all().map(brand => ({
@@ -68,11 +85,18 @@ module.exports = (() => {
         return next(err);
       }
 
-      return res.json({
-        data: watches,
-        meta: {
-          nextPage: meta.nextPage
-        },
+      async.map(watches, self.formatWatch, (err, formatedWatches) => {
+        if (err) {
+          log.error(err);
+          return next(err);
+        }
+
+        return res.json({
+          data: formatedWatches,
+          meta: {
+            nextPage: meta.nextPage
+          },
+        });
       });
     });
   };
@@ -84,7 +108,14 @@ module.exports = (() => {
         return next(err);
       }
 
-      return res.json(watch);
+      self.formatWatch(watch, (err, formatedWatch) => {
+        if (err) {
+          log.error(err);
+          return next(err);
+        }
+
+        return res.json(formatedWatch);
+      });
     });
   };
 
