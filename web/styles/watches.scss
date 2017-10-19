@@ -34,6 +34,8 @@
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
+    background-color: white;
+    transition: opacity 350ms ease;
 
     &.secondary {
       opacity: 0;
@@ -138,12 +140,21 @@
     }
   }
 
-  &.dealer--bulangandsons_com,
-  &.dealer--lunaroyster_com,
-  &.dealer--mentawatches_com,
-  &.dealer--watchsteez_com {
+
+
+
+
+
+
+  &.dealer--carsandwatches_com {
     .image {
-      background-size: cover;
+      background-size: 110%;
+    }
+  }
+
+  &.dealer--europeanwatch_com {
+    .image {
+      background-size: 120%;
     }
   }
 
@@ -153,9 +164,33 @@
     }
   }
 
+  &.dealer--manoftheworld_com {
+    .image.primary {
+      background-size: 140%;
+    }
+  }
+
+  &.dealer--theoandharris_com {
+    .image {
+      background-size: 150%;
+    }
+  }
+
   &.dealer--ponti_collection_ch {
     .image {
-      background-size: 160%;
+      background-size: 180%;
+    }
+  }
+
+  &.dealer--acollectedman_com,
+  &.dealer--analogshift_com,
+  &.dealer--bulangandsons_com,
+  &.dealer--hodinkee_com,
+  &.dealer--lunaroyster_com,
+  &.dealer--mentawatches_com,
+  &.dealer--watchsteez_com {
+    .image {
+      background-size: cover;
     }
   }
 }
