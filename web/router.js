@@ -3,6 +3,7 @@ import Router from 'ampersand-router';
 import ReactDOM from 'react-dom';
 import HomePage from 'views/home-page';
 import WatchList from 'views/watch/list';
+import Layout from 'views/layout';
 
 export default Router.extend({
   routes: {
@@ -21,12 +22,18 @@ export default Router.extend({
     return Router.prototype.redirectTo.call(this, fragment);
   },
 
-  renderPage(page) {
+  renderPage(page, options = { layout: true }) {
+    if (options.layout) {
+      page = (
+        <Layout>{page}</Layout>
+      );
+    }
+
     ReactDOM.render(page, document.getElementById('app'));
   },
 
   listWatches() {
-    this.renderPage(<WatchList watches={app.state.watches} />, {layout: false})
+    this.renderPage(<WatchList watches={app.state.watches} />);
   },
 
   catchAll() {

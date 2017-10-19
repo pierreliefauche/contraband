@@ -16,21 +16,18 @@ export default class WatchList extends BaseView {
     const { watches } = this.props;
 
     return (
-      <div className="watches absolute-cover">
-        <h2>C O N T R A B A N D</h2>
-        <InfiniteScroll
-          hasMore={watches.hasNextPage()}
-          loadMore={this.fetchNextPage.bind(this)}
-          initialLoad={false}
-          loader={<div className="loader">Loading ...</div>}
-          useWindow={true}
-          // threshold={700}
-          className="list flex-fill-row absolute-cover">
-          {watches.map(watch => {
-            return <WatchItem key={watch.getId()} watch={watch} user={app.state.user}/>;
-          })}
-        </InfiniteScroll>
-      </div>
+      <InfiniteScroll
+        hasMore={watches.hasNextPage()}
+        loadMore={this.fetchNextPage.bind(this)}
+        initialLoad={false}
+        loader={<div className="loader">Loading ...</div>}
+        useWindow={true}
+        // threshold={700}
+        className="watches flex-fill-row absolute-cover">
+        {watches.map(watch => {
+          return <WatchItem key={watch.getId()} watch={watch} user={app.state.user}/>;
+        })}
+      </InfiniteScroll>
     );
   }
 };
