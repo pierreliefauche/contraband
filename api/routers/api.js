@@ -46,6 +46,16 @@ module.exports = (() => {
       return cb(null, watch);
     }
 
+    if (watch.price.value && !watch.price.amount) {
+      watch.price.amount = watch.price.value;
+      delete watch.price.value;
+    }
+
+    if (!watch.price.amount) {
+      delete watch.price;
+      return cb(null, watch);
+    }
+
     money.convert(watch.price, 'USD', (err, usdAmount) => {
       if (err) {
         log.error(err);
