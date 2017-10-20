@@ -15,7 +15,7 @@ nav {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 5em;
+  width: 5.1em;
   background: black;
   color: white;
   overflow-x: hidden;
@@ -48,6 +48,19 @@ nav {
       background-color: white;
       color: black;
     }
+  }
+
+  canvas {
+    width: 0.75em;
+    height: 0.75em;
+    position: absolute;
+    top: 13px;
+    margin: 0.1em;
+    padding: 0;
+    font-size: 5em;
+    left: 2px;
+    background-color: black;
+    z-index: 3;
   }
 
   &:hover {
