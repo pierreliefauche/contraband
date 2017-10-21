@@ -13,7 +13,7 @@ export default class WatchList extends BaseView {
   }
 
   render() {
-    const { watches } = this.props;
+    const { watches, query } = this.props;
 
     return (
       <InfiniteScroll
@@ -24,7 +24,7 @@ export default class WatchList extends BaseView {
         useWindow={true}
         // threshold={700}
         className="watches flex-fill-row absolute-cover">
-        {watches.map(watch => {
+        {watches.filter(query.filter.bind(query)).map(watch => {
           return <WatchItem key={watch.getId()} watch={watch} user={app.state.user}/>;
         })}
       </InfiniteScroll>

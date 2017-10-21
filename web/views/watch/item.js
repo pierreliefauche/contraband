@@ -21,7 +21,7 @@ export default class WatchItem extends BaseView {
       sold: watch.sold,
       'has-price': watch.price,
       'favorited': user.hasFavorited(watch),
-      'new': user.hasSeen(watch),
+      'new': !user.hasSeen(watch),
       [`dealer--${watch.dealerId.replace(/[^a-z0-9]/gi, '_')}`]: true,
       [`brand--${(watch.brandId || '').replace(/[^a-z0-9]/gi, '_')}`]: watch.brandId,
     });

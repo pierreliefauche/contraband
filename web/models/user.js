@@ -90,7 +90,7 @@ export default Model.extend({
 
   hasSeen(watch) {
     const buffer = 12 * 3600 * 1000; // 12 hours in milliseconds
-    return this.lastVisitedAt && watch && watch.createdAt.getTime() > (this.lastVisitedAt.getTime() - buffer);
+    return !(this.lastVisitedAt && watch && watch.createdAt.getTime() > (this.lastVisitedAt.getTime() - buffer));
   },
 
   mayBumpLastVisitedAt() {

@@ -3,6 +3,7 @@ import Router from 'ampersand-router';
 import ReactDOM from 'react-dom';
 import WatchList from 'views/watch/list';
 import Layout from 'views/layout';
+import Query from 'models/query';
 
 export default Router.extend({
   routes: {
@@ -44,12 +45,14 @@ export default Router.extend({
   },
 
   listWatches() {
-    this.renderPage(<WatchList watches={app.state.watches} />);
+    app.query = new Query();
+    this.renderPage(<WatchList watches={app.state.watches} query={app.query} />);
   },
 
   listFavorites() {
     app.state.user.requiresAuth(() => {
-      this.renderPage(<WatchList watches={app.state.user.favorites} />);
+      app.query = new Query();
+      this.renderPage(<WatchList watches={app.state.user.favorites} query={app.query} />);
     });
   },
 

@@ -64,5 +64,14 @@ export default Model.extend({
         return `${cur} ${amount.toLocaleString()}`;
       }
     },
+    priceAmount: {
+      deps: ['price'],
+      fn() {
+        if (!this.price) {
+          return null;
+        }
+        return this.price.usd ? this.price.usd : this.price.amount;
+      }
+    },
   },
 });
