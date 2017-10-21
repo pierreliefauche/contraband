@@ -29,6 +29,16 @@ nav {
     font-size: 5em;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+
+    &:before {
+      content: '';
+      background-color: black;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 0.75em;
+    }
   }
 
   a {
@@ -59,7 +69,6 @@ nav {
     padding: 0;
     font-size: 5em;
     left: 2px;
-    background-color: black;
     z-index: 3;
   }
 

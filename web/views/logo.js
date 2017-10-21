@@ -59,7 +59,7 @@ export default class Logo extends React.Component {
 
     this.currentPosition = position;
 
-    const ratio = window.devicePixelRatio
+    const ratio = window.devicePixelRatio * 2;
     const canvas = this.canvas;
     canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;
@@ -75,11 +75,6 @@ export default class Logo extends React.Component {
     ctx.translate(width/2, height/2);
     var diameter = Math.min(width, height);
     ctx.rotate(-Math.PI/2 + this.offsetToAngle(position.center));
-
-    // ctx.beginPath();
-    // ctx.arc(0, 0, (diameter - ctx.lineWidth) / 2, 0, 2 * Math.PI);
-    // ctx.strokeStyle = '#111';
-    // ctx.stroke();
 
     var startAngle = -1 * this.offsetToAngle(position.length/2);
     var endAngle = this.offsetToAngle(position.length/2);
@@ -153,7 +148,7 @@ export default class Logo extends React.Component {
     this.transitionTo(this.nowPosition, () => {
       this.drawInterval = setInterval(() => {
         this.draw(this.nowPosition);
-      }, 5 * 1000);
+      }, 1000);
     });
   }
 
