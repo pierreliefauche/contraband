@@ -11,6 +11,8 @@ module.exports = function(imageUrl, width, height) {
   url.path = 'rsz.io/' + url.path;
   url.params.mode = 'max';
   url.params.bgcolor = 'white';
+  url.params.quality = '85';
+  url.params.sharpen = '';
 
   if (width) {
     url.params.width = width;
