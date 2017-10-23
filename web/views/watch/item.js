@@ -1,4 +1,5 @@
 import BaseView from 'views/_base';
+import imageResizer from 'helpers/image-resizer';
 import classNames from 'classnames';
 
 export default class WatchItem extends BaseView {
@@ -15,6 +16,14 @@ export default class WatchItem extends BaseView {
     }
   }
 
+  getImageUrl(url) {
+    if (!url) {
+      return url;
+    }
+
+    return imageResizer(url, Math.ceil(250 * window.devicePixelRatio), Math.ceil(250 * 1.2* window.devicePixelRatio));
+  }
+
   render() {
     const { watch, user } = this.props;
     const classnames = classNames('watch', {
@@ -29,8 +38,8 @@ export default class WatchItem extends BaseView {
     return (
       <article  className={classnames}>
         <a href={watch.dealerUrl} target="_blank" className="images">
-          <div className="image primary" style={{backgroundImage: `url(${watch.primaryImageUrl})`}}></div>
-          {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${watch.secondaryImageUrl})`}}></div> : undefined}
+          <div className="image primary" style={{backgroundImage: `url(${this.getImageUrl(watch.primaryImageUrl)})`}}></div>
+          {watch.secondaryImageUrl ? <div className="image secondary" style={{backgroundImage: `url(${this.getImageUrl(watch.secondaryImageUrl)})`}}></div> : undefined}
         </a>
         <h3>{watch.title}</h3>
         <footer>
