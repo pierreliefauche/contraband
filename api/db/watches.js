@@ -88,7 +88,9 @@ class WatchesStore {
     const limit = Math.max(10, Math.min(options.limit || 50, 100));
 
     // TODO: read criteria
-    const query = {};
+    const query = {
+      hidden: { $ne: true },
+    };
 
     if (options.page) {
       query._id = {
