@@ -1,6 +1,8 @@
 import URL from 'helpers/url';
 
 module.exports = function(imageUrl, width, height) {
+  return imageUrl;
+  
   if (!imageUrl) {
     return imageUrl;
   }
