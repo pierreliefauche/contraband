@@ -70,7 +70,7 @@
     "xhr": "^2.4.0"
   },
   "engines": {
-    "node": "8.7.0"
+    "node": "9.2.1"
   },
   "author": {
     "name": "Pierre-Élie Fauché",
