@@ -86,8 +86,11 @@ module.exports = (() => {
   };
 
   self.listWatches = (req, res, next) => {
-    const criteria = {};
     const options = { page: req.query.page, limit: self.getLimit(req) };
+    
+    const criteria = {
+      sold: false,
+    };
 
     self.db.watches.list(criteria, options, (err, watches, meta) => {
       if (err) {
