@@ -127,6 +127,30 @@ class WatchesStore {
       return cb(null, watches, meta);
     });
   }
+
+  markGhostsAsSold(cb) {
+    const now = new Date();
+    const someTimeAgo = new Date(now.getTime() - 12 * 3600 * 1000); // 12 hours ago
+
+    const filter = {
+      sold: false,
+      updatedAt: { $lt: someTimeAgo },
+    };
+
+    const patch = {
+      sold: true,
+      updatedAt: now,
+    };
+
+    this.collection.updateMany(filter, patch, (err, r) => {
+      if (err) {
+        log.error(err);
+        return cb(err);
+      }
+
+      return cb();
+    });
+  }
 }
 
 module.exports = WatchesStore;

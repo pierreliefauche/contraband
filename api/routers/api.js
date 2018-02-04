@@ -166,7 +166,16 @@ module.exports = (() => {
         return next(err);
       }
 
-      return res.status(204).send();
+      // Some watches disappear from scraping once sold,
+      // so mark the stale watches as such.
+      self.db.watches.markGhostsAsSold(err => {
+        if (err) {
+          log.error(err);
+          return next(err);
+        }
+
+        return res.status(204).send();
+      });
     });
   };
 
