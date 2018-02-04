@@ -138,8 +138,10 @@ class WatchesStore {
     };
 
     const patch = {
-      sold: true,
-      updatedAt: now,
+      $set: {
+        sold: true,
+        updatedAt: now,
+      },
     };
 
     this.collection.updateMany(filter, patch, (err, r) => {
