@@ -51,7 +51,7 @@ export default Router.extend({
 
   listFavorites() {
     app.state.user.requiresAuth(() => {
-      app.query = new Query();
+      app.query = new Query({ sold: null });
       this.renderPage(<WatchList watches={app.state.user.favorites} query={app.query} />);
     });
   },
