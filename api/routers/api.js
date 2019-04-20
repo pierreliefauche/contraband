@@ -42,6 +42,10 @@ module.exports = (() => {
   }
 
   self.formatWatch = (watch, cb) => {
+    if (!watch) {
+      return cb(null, watch);
+    }
+    
     if (!watch.price) {
       return cb(null, watch);
     }
@@ -105,7 +109,7 @@ module.exports = (() => {
         }
 
         return res.json({
-          data: formatedWatches,
+          data: formatedWatches.map(w => w),
           meta: {
             nextPage: meta.nextPage
           },
@@ -119,6 +123,11 @@ module.exports = (() => {
       if (err) {
         log.error(err);
         return next(err);
+      }
+      
+      if (!watch) {
+        log.error('Watch not found', req.params.watchId);
+        return next({code: 404, message: 'Watch not found'});
       }
 
       self.formatWatch(watch, (err, formatedWatch) => {
