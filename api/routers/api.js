@@ -164,7 +164,8 @@ module.exports = (() => {
       scraper.scrap((err, items) => {
         if (err) {
           log.error(err);
-          return cb(err);
+          // Do not throw error
+          return cb();
         }
 
         return self.db.watches.upsert(items, cb);
