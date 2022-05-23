@@ -1,85 +1,91 @@
-const log = global.log;
-const crypto = require('crypto');
-const cheerio = require('cheerio');
-const request = require('request');
-const async = require('async');
-const brands = require('../brands');
+import * as crypto from 'crypto'
+import * as cheerio from 'cheerio'
+import axios from 'axios'
 
-class Scraper {
-  constructor(config) {
-    this.dealer = config;
+import type {
+  Item,
+  ItemExtract,
+  DealerConfig,
+  DealerProcessor,
+} from '../types'
+
+const log = console
+
+interface Config {
+  dealer: DealerConfig & DealerProcessor
+}
+
+export default class Scraper {
+  private dealer: DealerConfig & DealerProcessor
+
+  constructor({ dealer }: Config) {
+    this.dealer = dealer
   }
 
-  parseInt(str) {
+  protected parseInt (str: string): null | number {
     str = str.replace(/ |([.,]\d{0,2}$)/g, '').replace(/['.,]/g, '');
     const int = parseInt(str, 10);
     return isNaN(int) ? null : int;
   }
 
-  fetchBody(url, cb) {
-    request({
-      url,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38',
-        'Host': url.split('/')[2],
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-us',
-      },
-      gzip: true,
-      agentOptions: {
-        rejectUnauthorized: false,
-      }
-    }, (err, res, body) => {
-      if (err) {
-        log.error(err);
-        return cb(err);
+  protected async fetchBody (url: string): Promise<string> {
+    try {
+      const { data, status } = await axios.get<string>(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38',
+          'Host': url.split('/')[2],
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-us',
+        },
+      })
+
+      if (status < 200 || status >= 300) {
+        throw new Error(`Error fetching dealer id=${this.dealer.id}`)
       }
 
-      if (res.statusCode !== 200) {
-        log.error(`Invalid status fetching dealer id=${this.dealer.id} url=${url}`);
-        return cb({ code: 500, message: `Error fetching dealer id=${this.dealer.id}` });
-      }
-
-      if (typeof this.dealer.postFetch === 'function') {
-        body = this.dealer.postFetch(body);
-      }
-
-      return cb(null, body);
-    });
+      return typeof this.dealer.postFetch === 'function'
+          ? this.dealer.postFetch(data)
+          : data
+    } catch (error) {
+      log.error(error)
+      throw error
+    }
   }
 
 
-  extractPathsValues($, context, paths) {
-    paths = [].concat(paths);
+  protected extractPathsValues($: cheerio.CheerioAPI, context: cheerio.Node, _paths: string | string[]): string[] {
+    const paths: string[] = Array.isArray(_paths) ? _paths : [_paths]
 
-    return paths.reduce((allValues, path) => {
+    return paths.reduce<string[]>((allValues, path) => {
       const [ selector, attribute ] = path.split('@');
 
       const $selected = selector ? $(selector, context) : $(context);
 
-      const values = $selected.map((i, elem) => {
-        return attribute ? $(elem).attr(attribute) : $(elem).text();
-      }).get().filter(v => v).map(v => v.trim());
+      const values = $selected
+        .map((i, elem) => attribute ? $(elem).attr(attribute) : $(elem).text())
+        .get()
+        .filter(Boolean)
+        .map(v => v.trim());
 
       return allValues.concat(values || []);
     }, []);
   }
 
-  extractPathsValue($, context, paths) {
-    return this.extractPathsValues($, context, paths).shift();
+  protected extractPathsValue($: cheerio.CheerioAPI, context: cheerio.Node, paths: string | string[]): string {
+    return this.extractPathsValues($, context, paths)[0];
   }
 
-  extractFromContext($, context) {
+  protected extractFromContext($: cheerio.CheerioAPI, context: cheerio.Node) {
     const self = this;
     return {
-      value(paths) { return self.extractPathsValue($, context, paths) },
-      values(paths) { return self.extractPathsValues($, context, paths) },
+      value(paths: string | string[]) { return self.extractPathsValue($, context, paths) },
+      values(paths: string | string[]) { return self.extractPathsValues($, context, paths) },
     };
   }
 
-  extract(body) {
-    const $ = cheerio.load(body);
-    const $items = $(this.dealer.items);
+  protected extract(body: string): ItemExtract[] {
+    const $ = cheerio.load(body, {scriptingEnabled: !this.dealer.disableScripting});
+    const $items = $(this.dealer.extract.items);
 
     if ($items.length === 0) {
       log.error(`Extracted no items dealer=${this.dealer.id}`);
@@ -90,22 +96,24 @@ class Scraper {
 
     return $items.map((i, elem) => {
       const get = this.extractFromContext($, elem);
-
-      let item = {
-        url: specs.url && get.value(specs.url) || undefined,
+      
+      let item: ItemExtract = {
+        url: get.value(specs.url),
         brand: specs.brand && get.value(specs.brand) || undefined,
         title: specs.title && get.value(specs.title) || undefined,
         description: specs.description && get.value(specs.description) || undefined,
         images: Array.isArray(specs.images) && get.values(specs.images) || undefined,
-        price: specs.price && get.value(specs.price) || undefined,
+        price: {
+          raw: specs.price && get.value(specs.price) || undefined
+        },
         sold: false,
       };
 
-      if (specs.sold && specs.sold.selector) {
+      if (specs.sold && specs.sold.selector && typeof specs.sold.selector === 'string') {
         if ('is' in specs.sold) {
           item.sold = get.value(specs.sold.selector) === specs.sold.is;
         }
-        if ('includes' in specs.sold) {
+        if ('includes' in specs.sold && typeof specs.sold.includes === 'string') {
           item.sold = (get.value(specs.sold.selector) || '').includes(specs.sold.includes);
         }
       }
@@ -119,7 +127,7 @@ class Scraper {
   }
 
 
-  cleanText(text) {
+  protected cleanText(text: string): string {
     text = text.trim().replace(/\s+/gi, ' ');
 
     if (text === text.toUpperCase()) {
@@ -130,7 +138,7 @@ class Scraper {
     return text;
   }
 
-  cleanUrl(baseUrl, url) {
+  protected cleanUrl(baseUrl: string, url: string): string {
     if (url.startsWith('//')) {
       return 'https:' + url;
     }
@@ -140,7 +148,7 @@ class Scraper {
     return url;
   }
 
-  cleanCurrency(str) {
+  protected cleanCurrency(str: string): string {
     str = str.toLowerCase();
 
     if (str.includes('eur') || str.includes('€')) {
@@ -158,25 +166,31 @@ class Scraper {
     return 'USD';
   }
 
-  cleanPrice(price) {
-    const m = price && price.match(/(\d{1,3}['., ]?)*\d{1,3}([.,]\d{1,2})?/);
-    if (m && m[0] && this.parseInt(m[0])) {
-      return {
-        amount: this.parseInt(m[0]),
-        currency: this.cleanCurrency(price),
-      };
+  protected cleanPrice(price: Item['price']): Item['price'] | undefined {
+    if (price?.raw) {
+      const m = price.raw.match(/(\d{1,3}['., ]?)*\d{1,3}([.,]\d{1,2})?/);
+      if (m?.[0] && this.parseInt(m[0])) {
+        return {
+          ...price,
+          amount: this.parseInt(m[0]) || undefined,
+          currency: this.cleanCurrency(price.raw),
+        };
+      }
     }
+    
   }
 
-  clean(items) {
+  protected clean(items: ItemExtract[]): ItemExtract[] {
     const baseUrl = this.dealer.urls[0].split('/').slice(0, 3).join('/');
     const cleanUrl = this.cleanUrl.bind(this, baseUrl);
 
     return items.map(item => {
       // Texts: Remove extra white-space
-      ['brand', 'title', 'description', 'price'].forEach(key => {
-        if (typeof item[key] === 'string') {
-          item[key] = this.cleanText(item[key]);
+      const keys = ['brand', 'title', 'description'] as const
+      keys.forEach(key => {
+        const value = item[key]
+        if (typeof value === 'string') {
+          item[key] = this.cleanText(value);
         }
       });
 
@@ -190,8 +204,8 @@ class Scraper {
       
       // Images: handle srcset
       if (Array.isArray(item.images)) {
-        item.images = item.images.reduce((images, imageUrl) => {
-          images.push(imageUrl.split(',').map(one => one.trim().split(' ')[0]))
+        item.images = item.images.reduce<string[]>((images, imageUrl) => {
+          images.push(...imageUrl.split(',').map(one => one.trim().split(' ')[0]))
           return images
         }, []);
       }
@@ -206,7 +220,7 @@ class Scraper {
 
       // Images: Remove duplicates
       if (Array.isArray(item.images)) {
-        item.images = item.images.reduce((images, image) => {
+        item.images = item.images.reduce<string[]>((images, image) => {
           if (!images.includes(image)) {
             images.push(image);
           }
@@ -228,12 +242,12 @@ class Scraper {
       }
 
       return item;
-    }).filter(i => i);
+    }).filter(Boolean);
   }
 
 
-  filter(items) {
-    return items.map(item => {
+  protected filter(items: ItemExtract[]): ItemExtract[] {
+    return items.map((item) => {
       if (!item.url) {
         log.warn(`item has no url dealerId=${this.dealer.id}`, item);
         return null;
@@ -250,23 +264,17 @@ class Scraper {
       }
 
       return item;
-    }).filter(i => i);
+    }).filter((item): item is ItemExtract => !!item);
   }
 
 
-  format(items) {
-    return items.map(item => {
-      // Generate item ID based on its URL
-      item.id = crypto.createHash('md5').update(item.url).digest('base64');
-
-      // Set Dealer ID
-      item.dealerId = this.dealer.id;
-
-      // Try to find brand
-      item.brandId = (item.brand && brands.extractBrandId(item.brand)) || brands.extractBrandId(item.title) || (item.description && brands.extractBrandId(item.description));
-
-      // Remove brand
-      delete item.brand;
+  protected format(items: ItemExtract[]): Item[] {
+    return items.map((extract) => {
+      let item: Item = {
+        ...extract,
+        id: crypto.createHash('md5').update(extract.url).digest('base64'),
+        dealerId: this.dealer.id
+      }
 
       if (typeof this.dealer.postHydrate === 'function') {
         item = this.dealer.postHydrate(item);
@@ -274,49 +282,34 @@ class Scraper {
 
       return item;
 
-    }).filter(i => i);
+    }).filter(Boolean);
   }
 
 
-  scrapUrl(url, cb) {
-    this.fetchBody(url, (err, body) => {
-      if (err) {
-        log.error(err);
-        return cb(err);
-      }
-
-      let items = this.extract(body);
-      items = this.clean(items);
-      items = this.filter(items);
-      items = this.format(items);
-
-      return cb(null, items);
-    });
+  protected async scrapUrl (url: string): Promise<Item[]> {
+    const body = await this.fetchBody(url)
+    
+    let extracts = this.extract(body);
+    extracts = this.clean(extracts);
+    extracts = this.filter(extracts);
+    const items = this.format(extracts);
+    
+    return items
   }
 
 
-  scrap(cb) {
-    let allItems = [];
+  public async scrap(): Promise<Item[]> {
+    const allItems: Item[] = []
 
-    async.eachLimit(this.dealer.urls, 3, (url, cb) => {
-      this.scrapUrl(url, (err, items) => {
-        if (err) {
-          log.error(err);
-          return cb(err);
+    for (const url of this.dealer.urls) {
+      const items = await this.scrapUrl(url)
+      items.forEach(item => {
+        if (!allItems.some(i => i.id === item.id)) {
+          allItems.push(item);
         }
+      })
+    }
 
-        items.forEach(item => {
-          if (!allItems.some(i => i.id === item.id)) {
-            allItems.push(item);
-          }
-        });
-
-        return cb(null, items.length > 0);
-      });
-    }, (err) => {
-      return cb(err, allItems);
-    });
+    return allItems
   }
 }
-
-module.exports = Scraper;
